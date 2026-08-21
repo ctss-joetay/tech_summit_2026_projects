@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/groups/:gid/.summit/:path*",
+      "destination": "/404.html"
+    }
+  ]
+}

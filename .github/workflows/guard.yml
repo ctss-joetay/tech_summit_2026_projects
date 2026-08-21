@@ -1,0 +1,46 @@
+name: group-isolation-guard
+# Defense in depth: the backend path guard is the primary isolation
+# mechanism. This workflow independently verifies that no commit ever
+# touches more than one group's folder. Direct pushes can't be blocked
+# retroactively, so a violation fails the run loudly for admin action.
+on: [push]
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Each commit touches at most one group folder
+        run: |
+          set -e
+          BEFORE="${{ github.event.before }}"
+          AFTER="${{ github.event.after }}"
+          if [ "$BEFORE" = "0000000000000000000000000000000000000000" ]; then
+            RANGE="$AFTER"
+          else
+            RANGE="$BEFORE..$AFTER"
+          fi
+          for sha in $(git rev-list "$RANGE"); do
+            # The initial bootstrap commit legitimately creates every group
+            # folder at once. `$sha^` does not resolve for a parentless
+            # commit, which is the reliable way to detect one -- note that a
+            # command in an `if` condition is exempt from `set -e`.
+            if ! git rev-parse -q --verify "$sha^" >/dev/null 2>&1; then
+              continue
+            fi
+            # -m --first-parent: without it, `git show --name-only` prints
+            # NOTHING for a merge commit (files TREESAME to a parent are
+            # omitted), so a merge combining two groups would score 0 and
+            # pass silently. --first-parent measures what the merge actually
+            # introduced relative to the mainline. core.quotePath=false:
+            # without it, git C-quotes non-ASCII paths (e.g. "caf\303\251.html"),
+            # so a unicode filename never matches the `^groups/` anchor below
+            # and a cross-group commit hiding behind it would score 1 and pass.
+            count=$(git -c core.quotePath=false show --pretty="" --name-only -m --first-parent "$sha" \
+              | grep -oE '^groups/g[0-9]{2}/' | sort -u | wc -l)
+            if [ "$count" -gt 1 ]; then
+              echo "::error::commit $sha touches multiple group folders"
+              exit 1
+            fi
+          done

@@ -1,0 +1,7 @@
+# .summit is the platform's own metadata: AI context summaries and the
+# project brief. Spec requires it committed to git (it is the judging
+# record) but never served. The vercel.json rewrite is a second line of
+# defence -- Vercel serves an exact static-file match before applying
+# rewrites, so keeping these files out of the deployment is the reliable
+# half.
+groups/*/.summit/
