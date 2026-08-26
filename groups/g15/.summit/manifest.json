@@ -1,4 +1,82 @@
 {
   "gid": "g15",
-  "contexts": []
+  "contexts": [
+    {
+      "id": "001",
+      "date": "2026-08-26",
+      "topic": "food-intake-tracker",
+      "files_touched": [
+        "script.js",
+        "index.html"
+      ],
+      "decisions": [
+        "Rejected asymmetric horror game request as infeasible without server/networking support",
+        "Built a food intake tracker with nutrient goals and suggestions instead",
+        "Used Summit.save/load for persistence across reloads"
+      ],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "001-2026-08-26-food-intake-tracker.md"
+    },
+    {
+      "id": "002",
+      "date": "2026-08-26",
+      "topic": "jayden-high-calorie-snack",
+      "files_touched": [],
+      "decisions": [
+        "Preset snack food defined as 620 kcal, 45g fat, 4g protein, 2g carbs to demonstrate an unbalanced/high-calorie low-nutrient food entry"
+      ],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "002-2026-08-26-jayden-high-calorie-snack.md"
+    },
+    {
+      "id": "003",
+      "date": "2026-08-26",
+      "topic": "jayden-calorie-easter-egg",
+      "files_touched": [
+        "script.js"
+      ],
+      "decisions": [
+        "Used Number.MAX_SAFE_INTEGER instead of literal 9^9^9^9 since that value is unrepresentable and would become Infinity/NaN in calculations"
+      ],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "003-2026-08-26-jayden-calorie-easter-egg.md"
+    },
+    {
+      "id": "004",
+      "date": "2026-08-26",
+      "topic": "weight-tracking",
+      "files_touched": [
+        "script.js",
+        "index.html",
+        "styles.css"
+      ],
+      "decisions": [
+        "Weight log stored separately via Summit.save('weightLog', ...)",
+        "Trend shown as up/down/unchanged compared to last entry rather than a graph"
+      ],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "004-2026-08-26-weight-tracking.md"
+    },
+    {
+      "id": "005",
+      "date": "2026-08-26",
+      "topic": "weight-top-food-suggestions",
+      "files_touched": [
+        "index.html",
+        "script.js"
+      ],
+      "decisions": [
+        "Weight tracking section kept at top of page (was already there)",
+        "Suggestion box shows specific foods with nutrient breakdown targeting the lowest nutrient, rather than plain text advice"
+      ],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "005-2026-08-26-weight-top-food-suggestions.md"
+    }
+  ],
+  "last_summary_ts": 1787732508.687589
 }

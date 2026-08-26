@@ -1,11 +1,137 @@
+:root {
+  --accent: #4f46e5;
+  --bg: #fafafa;
+  --card-bg: #ffffff;
+  --text: #1a1a1a;
+  --border: #e0e0e0;
+}
+
 * { box-sizing: border-box; margin: 0; }
+
 body {
   font-family: system-ui, sans-serif;
-  background: #fafafa;
-  color: #1a1a1a;
-  display: grid;
-  place-items: center;
+  background: var(--bg);
+  color: var(--text);
   min-height: 100vh;
+  padding: 2rem 1rem;
 }
-main { text-align: center; }
-h1 { margin-bottom: 0.5rem; }
+
+main {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+h1 { text-align: center; margin-bottom: 1.5rem; }
+h2 { margin-bottom: 0.75rem; font-size: 1.1rem; }
+
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.goal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.85rem;
+  gap: 0.25rem;
+}
+
+input {
+  padding: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+#food-form {
+  display: grid;
+  gap: 0.5rem;
+}
+
+#weight-form {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+button {
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+button:hover { opacity: 0.9; }
+
+#food-log, #weight-log {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+#food-log li, #weight-log li {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.4rem;
+  font-size: 0.9rem;
+}
+
+.remove-btn {
+  background: #e11d48;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.8rem;
+}
+
+.bar-row {
+  margin-bottom: 0.75rem;
+}
+
+.bar-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  margin-bottom: 0.25rem;
+}
+
+.bar-track {
+  background: #eee;
+  border-radius: 6px;
+  height: 12px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.3s ease;
+}
+
+.bar-fill.over { background: #e11d48; }
+
+#suggestion {
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+#weight-change {
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+  color: #555;
+}
+</content>
