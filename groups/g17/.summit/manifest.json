@@ -1,4 +1,101 @@
 {
   "gid": "g17",
-  "contexts": []
+  "contexts": [
+    {
+      "id": "001",
+      "date": "2026-08-26",
+      "topic": "flappy-bird-clone",
+      "files_touched": [
+        "script.js",
+        "style.css",
+        "index.html"
+      ],
+      "decisions": [
+        "Use canvas-based game loop with gravity and flap mechanics",
+        "Save best score persistently using Summit.save"
+      ],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "001-2026-08-26-flappy-bird-clone.md"
+    },
+    {
+      "id": "002",
+      "date": "2026-08-26",
+      "topic": "bird-and-clouds",
+      "files_touched": [],
+      "decisions": [],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "002-2026-08-26-bird-and-clouds.md"
+    },
+    {
+      "id": "003",
+      "date": "2026-08-26",
+      "topic": "varied-pipe-obstacles",
+      "files_touched": [
+        "script.js"
+      ],
+      "decisions": [
+        "Pipe gap always sized to fit at least 3 bird-diameters",
+        "Pipes randomized in width and color style with bright cap indicating gap"
+      ],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "003-2026-08-26-varied-pipe-obstacles.md"
+    },
+    {
+      "id": "004",
+      "date": "2026-08-26",
+      "topic": "bird-flap-mechanics",
+      "files_touched": [
+        "script.js"
+      ],
+      "decisions": [
+        "Flap velocity calculated via v=\u221a(2\u00b7gravity\u00b7height) so each Space press lifts the bird about one bird-height (28px), keeping jump height consistent across frame rates"
+      ],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "004-2026-08-26-bird-flap-mechanics.md"
+    },
+    {
+      "id": "005",
+      "date": "2026-08-26",
+      "topic": "flappy-bird-zoom-toggle",
+      "files_touched": [],
+      "decisions": [
+        "Zoom uses 1.8x scale centered on the bird, toggled via E key using ctx.save/translate/scale"
+      ],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "005-2026-08-26-flappy-bird-zoom-toggle.md"
+    },
+    {
+      "id": "006",
+      "date": "2026-08-26",
+      "topic": "pillar-color-and-gap",
+      "files_touched": [],
+      "decisions": [
+        "Pillars use green body with yellow rim styling",
+        "Gap size fixed at exactly 2 bird-diameters (56px) instead of randomized 3+ bird gap"
+      ],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "006-2026-08-26-pillar-color-and-gap.md"
+    },
+    {
+      "id": "007",
+      "date": "2026-08-26",
+      "topic": "gap-size-adjustment",
+      "files_touched": [
+        "script.js"
+      ],
+      "decisions": [
+        "Gap size set to 3 bird-diameters"
+      ],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "007-2026-08-26-gap-size-adjustment.md"
+    }
+  ],
+  "last_summary_ts": 1787735673.4380977
 }

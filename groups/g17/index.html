@@ -3,14 +3,21 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>My Project</title>
+  <title>Flappy Bird Replica</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <main>
-    <h1>Hello, Tech Summit!</h1>
-    <p>Edit this page in the IDE, or ask the AI to build something.</p>
+    <h1>Flappy Bird</h1>
+    <p id="status">Click Start to play. Flap with Space, click, or tap.</p>
+    <canvas id="game" width="400" height="500"></canvas>
+    <div class="hud">
+      <p>Score: <span id="score">0</span></p>
+      <p>Best: <span id="best">0</span></p>
+    </div>
+    <button id="startBtn">Start</button>
   </main>
+  <script src="_summit/runtime.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
