@@ -1,4 +1,50 @@
 {
   "gid": "g18",
-  "contexts": []
+  "contexts": [
+    {
+      "id": "001",
+      "date": "2026-08-26",
+      "topic": "flappy-bird-game",
+      "files_touched": [
+        "script.js",
+        "style.css"
+      ],
+      "decisions": [
+        "Used canvas with requestAnimationFrame game loop for physics and rendering",
+        "Click/tap/space controls flap and restart",
+        "Used Summit.save for best score persistence and Summit.submitScore for leaderboard"
+      ],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "001-2026-08-26-flappy-bird-game.md"
+    },
+    {
+      "id": "002",
+      "date": "2026-08-26",
+      "topic": "bird-shaped-player",
+      "files_touched": [
+        "script.js"
+      ],
+      "decisions": [
+        "Draw bird using canvas shapes instead of using an image file"
+      ],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "002-2026-08-26-bird-shaped-player.md"
+    },
+    {
+      "id": "003",
+      "date": "2026-08-26",
+      "topic": "flappy-bird-tuning-and-pipes",
+      "files_touched": [],
+      "decisions": [
+        "Cap bird fall speed with MAX_FALL_SPEED and reduce gravity for easier control",
+        "Style pipes with darker green outline and end caps to resemble classic pipes"
+      ],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "003-2026-08-26-flappy-bird-tuning-and-pipes.md"
+    }
+  ],
+  "last_summary_ts": 1787733765.2582443
 }
