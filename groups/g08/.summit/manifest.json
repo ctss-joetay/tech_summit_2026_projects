@@ -1,4 +1,72 @@
 {
   "gid": "g08",
-  "contexts": []
+  "contexts": [
+    {
+      "id": "001",
+      "date": "2026-08-26",
+      "topic": "shopping-app-cart",
+      "files_touched": [],
+      "decisions": [
+        "No real payment/server; checkout just clears cart and shows thank-you message",
+        "Cart state persisted via Summit.save so it survives reload"
+      ],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "001-2026-08-26-shopping-app-cart.md"
+    },
+    {
+      "id": "002",
+      "date": "2026-08-26",
+      "topic": "shop-catalog-and-cart",
+      "files_touched": [
+        "script.js",
+        "index.html",
+        "style.css"
+      ],
+      "decisions": [
+        "Expanded to 12 products with categories, search, filter, and sort",
+        "Added quantity +/- controls and per-item totals in cart panel",
+        "Added free shipping progress indicator",
+        "Cart state persists via Summit.save"
+      ],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "002-2026-08-26-shop-catalog-and-cart.md"
+    },
+    {
+      "id": "003",
+      "date": "2026-08-26",
+      "topic": "food-intake-tracker",
+      "files_touched": [
+        "index.html",
+        "script.js",
+        "style.css"
+      ],
+      "decisions": [
+        "Replaced the existing shopping app entirely with a food intake tracker rather than keeping both",
+        "Track food log entries per-day keyed by today's date",
+        "Persist data using Summit.save/load"
+      ],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "003-2026-08-26-food-intake-tracker.md"
+    },
+    {
+      "id": "004",
+      "date": "2026-08-26",
+      "topic": "sleep-tracker-app",
+      "files_touched": [
+        "index.html",
+        "script.js"
+      ],
+      "decisions": [
+        "Replaced the food tracker entirely with a dedicated sleep tracker instead of combining both apps",
+        "Use Summit.save/load persistence pattern consistent with prior app"
+      ],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "004-2026-08-26-sleep-tracker-app.md"
+    }
+  ],
+  "last_summary_ts": 1787731547.4903362
 }

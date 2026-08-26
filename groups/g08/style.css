@@ -1,11 +1,221 @@
-* { box-sizing: border-box; margin: 0; }
-body {
-  font-family: system-ui, sans-serif;
-  background: #fafafa;
-  color: #1a1a1a;
-  display: grid;
-  place-items: center;
-  min-height: 100vh;
+:root {
+  --accent: #4f5fd9;
+  --accent-dark: #3a45a8;
+  --bg: #f5f6fb;
+  --card-bg: #ffffff;
+  --text: #1f2233;
+  --muted: #6b6f8a;
+  --danger: #d9534f;
+  --radius: 10px;
 }
-main { text-align: center; }
-h1 { margin-bottom: 0.5rem; }
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+header {
+  background: var(--accent);
+  color: white;
+  padding: 1.2rem 1.5rem;
+  text-align: center;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 1.6rem;
+}
+
+.hero {
+  text-align: center;
+  padding: 1.5rem;
+}
+
+.hero h2 {
+  margin: 0 0 0.3rem;
+}
+
+.hero p {
+  color: var(--muted);
+  margin: 0;
+}
+
+main {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 1rem 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+section.goal-panel,
+section.summary-panel,
+section.add-sleep-panel,
+section.log-panel {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 1.2rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.goal-panel {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.goal-panel label {
+  font-weight: 600;
+}
+
+.goal-panel input {
+  width: 120px;
+  padding: 0.4rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+button {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background 0.15s ease;
+}
+
+button:hover {
+  background: var(--accent-dark);
+}
+
+.summary-panel {
+  text-align: center;
+}
+
+#last-night,
+#avg-sleep {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0 0 0.3rem;
+}
+
+#goal-status {
+  color: var(--muted);
+  margin: 0.4rem 0 0.8rem;
+}
+
+.progress-bar {
+  height: 14px;
+  background: #e4e6f2;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+#progress-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--accent);
+  transition: width 0.25s ease, background 0.25s ease;
+}
+
+#progress-fill.over {
+  background: #2fa572;
+}
+
+.add-sleep-panel h3,
+.log-panel h3 {
+  margin-top: 0;
+}
+
+#sleep-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  align-items: flex-end;
+}
+
+#sleep-form label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--muted);
+  gap: 0.3rem;
+}
+
+#sleep-form input {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+#sleep-form button {
+  flex-shrink: 0;
+}
+
+#sleep-log {
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.log-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg);
+  padding: 0.5rem 0.7rem;
+  border-radius: 6px;
+}
+
+.log-info {
+  font-size: 0.9rem;
+}
+
+.remove-btn {
+  background: var(--danger);
+  padding: 0.2rem 0.6rem;
+  font-size: 0.85rem;
+}
+
+.remove-btn:hover {
+  background: #b3413d;
+}
+
+#log-empty {
+  color: var(--muted);
+  font-style: italic;
+}
+
+#clear-log-btn {
+  background: var(--danger);
+}
+
+#clear-log-btn:hover {
+  background: #b3413d;
+}
+
+.hidden {
+  display: none !important;
+}
+
+footer {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.85rem;
+  padding: 1.5rem;
+}
