@@ -3,14 +3,41 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>My Project</title>
+  <title>2D Sandbox</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <main>
-    <h1>Hello, Tech Summit!</h1>
-    <p>Edit this page in the IDE, or ask the AI to build something.</p>
+    <h1>2D Sandbox</h1>
+    <p class="hint">
+      Left-click/drag on the world to place blocks, right-click/drag to erase.
+      Select the Erase tool to left-click/drag erase too.
+      Move the player with <strong>A/D</strong> or arrow keys, jump with <strong>Space</strong>.
+      The yellow-highlighted cell in front of the player is your interaction target:
+      press <strong>F</strong> to break it, <strong>G</strong> to place the selected block into it.
+      Plant a Seed on grass near Water and wait a few seconds for it to grow into a tree.
+    </p>
+
+    <div id="toolbar">
+      <button class="block-btn" data-block="1" style="background:#4caf50">Grass</button>
+      <button class="block-btn" data-block="2" style="background:#8b5a2b">Dirt</button>
+      <button class="block-btn" data-block="3" style="background:#888888">Stone</button>
+      <button class="block-btn" data-block="4" style="background:#c68642">Wood</button>
+      <button class="block-btn" data-block="5" style="background:#dcd48e">Seed</button>
+      <button class="block-btn" data-block="7" style="background:#3aa0e6">Water</button>
+      <button class="block-btn" data-block="0" style="background:#eeeeee">Erase</button>
+      <button id="save-btn">Save World</button>
+      <button id="load-btn">Load World</button>
+      <button id="clear-btn">Clear World</button>
+    </div>
+
+    <canvas id="world" width="720" height="480"></canvas>
+    <p id="status"></p>
   </main>
+
+  <script src="_summit/runtime.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
+</content>
+</invoke>

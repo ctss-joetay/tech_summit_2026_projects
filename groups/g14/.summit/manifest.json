@@ -1,4 +1,81 @@
 {
   "gid": "g14",
-  "contexts": []
+  "contexts": [
+    {
+      "id": "001",
+      "date": "2026-08-26",
+      "topic": "2d-sandbox-game",
+      "files_touched": [
+        "script.js",
+        "index.html"
+      ],
+      "decisions": [
+        "Used a click/drag grid-painting system with left-click place and right-click erase",
+        "Implemented simple gravity/collision physics for player movement instead of a physics engine",
+        "Used Summit.save/load for persistence instead of another storage method"
+      ],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "001-2026-08-26-2d-sandbox-game.md"
+    },
+    {
+      "id": "002",
+      "date": "2026-08-26",
+      "topic": "block-gravity-sandbox",
+      "files_touched": [],
+      "decisions": [
+        "Add gravity to placed blocks so unsupported blocks fall and settle, rather than only having player gravity"
+      ],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "002-2026-08-26-block-gravity-sandbox.md"
+    },
+    {
+      "id": "003",
+      "date": "2026-08-26",
+      "topic": "seeds-and-water-growth",
+      "files_touched": [
+        "script.js",
+        "index.html"
+      ],
+      "decisions": [
+        "Trees only grow from seeds on grass when water is within a couple of cells",
+        "Water spreads sideways like a simple liquid and does not block the player"
+      ],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "003-2026-08-26-seeds-and-water-growth.md"
+    },
+    {
+      "id": "004",
+      "date": "2026-08-26",
+      "topic": "player-block-interaction",
+      "files_touched": [
+        "script.js",
+        "index.html"
+      ],
+      "decisions": [
+        "Player interacts with world via facing direction and a reach highlight rather than only mouse painting",
+        "F key breaks block, G key places selected toolbar block into highlighted cell"
+      ],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "004-2026-08-26-player-block-interaction.md"
+    },
+    {
+      "id": "005",
+      "date": "2026-08-26",
+      "topic": "static-stone-and-wood",
+      "files_touched": [
+        "script.js"
+      ],
+      "decisions": [
+        "Only dirt, seeds, and water are affected by gravity (via a FALLS set); stone and wood remain fixed once placed"
+      ],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "005-2026-08-26-static-stone-and-wood.md"
+    }
+  ],
+  "last_summary_ts": 1787732105.1783211
 }
