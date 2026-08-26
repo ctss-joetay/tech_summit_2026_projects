@@ -1,16 +1,53 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>My Project</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <main>
-    <h1>Hello, Tech Summit!</h1>
-    <p>Edit this page in the IDE, or ask the AI to build something.</p>
-  </main>
-  <script src="script.js"></script>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Digimon Roam</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>📟 Digimon Roam</h1>
+      <p class="tagline">Take steps to find Digimon!</p>
+    </header>
+
+    <main>
+      <section id="progress" class="card">
+        <h2>Steps to next encounter</h2>
+        <div class="bar-outer">
+          <div id="distance-bar" class="bar-inner"></div>
+        </div>
+        <p><span id="distance-value">35</span> steps remaining</p>
+        <p>Last step power: <span id="shake-meter">0</span></p>
+        <button id="simulate-shake">Take a step</button>
+        <p>Total steps taken: <span id="total-steps">0</span></p>
+      </section>
+
+      <section id="encounter" class="card hidden">
+        <h2>A wild Digimon appeared!</h2>
+        <div id="critter-display">
+          <span id="critter-emoji">❓</span>
+          <p id="critter-name"></p>
+        </div>
+        <button id="catch-btn">Throw a Digivice signal!</button>
+        <p id="catch-result" class="status-text"></p>
+      </section>
+
+      <section id="collection" class="card">
+        <h2>Your partners</h2>
+        <div id="collection-grid"></div>
+        <p id="collection-empty">No Digimon caught yet — start walking!</p>
+      </section>
+
+      <section id="digidex" class="card">
+        <h2>Digidex (reference book)</h2>
+        <p class="status-text">Discovered Digimon show their name and info. Undiscovered ones stay a mystery.</p>
+        <div id="digidex-grid"></div>
+      </section>
+    </main>
+
+    <script src="_summit/runtime.js"></script>
+    <script src="script.js"></script>
+  </body>
 </html>
