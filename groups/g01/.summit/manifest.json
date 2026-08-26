@@ -15,7 +15,24 @@
       "open_questions": [],
       "reason": "task-complete",
       "file": "001-2026-08-26-task-tracker-with-banner.md"
+    },
+    {
+      "id": "002",
+      "date": "2026-08-26",
+      "topic": "adhd-friendly-task-features",
+      "files_touched": [
+        "script.js",
+        "index.html"
+      ],
+      "decisions": [
+        "Active tasks sort by priority with color-coded left borders",
+        "Focus mode shows only the top task with a count of hidden remaining tasks",
+        "Input auto-refocuses after adding a task to support rapid brain-dumping"
+      ],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "002-2026-08-26-adhd-friendly-task-features.md"
     }
   ],
-  "last_summary_ts": 1787709575.7035317
+  "last_summary_ts": 1787725933.9232507
 }

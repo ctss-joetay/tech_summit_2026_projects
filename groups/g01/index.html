@@ -7,15 +7,29 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="reminder-banner" class="banner">No tasks yet — add one below!</div>
+  <div id="reminder-banner" class="banner">
+    <span id="banner-text">No tasks yet — add one below!</span>
+    <button id="banner-pause" type="button" title="Pause/resume reminder cycling">⏸</button>
+  </div>
+  <div id="celebration" class="celebration" hidden></div>
 
   <main>
     <h1>Task Tracker</h1>
 
     <form id="task-form">
       <input id="task-input" type="text" placeholder="What needs doing?" autocomplete="off" required>
+      <select id="priority-input" title="Priority">
+        <option value="low">Low</option>
+        <option value="medium" selected>Medium</option>
+        <option value="high">High</option>
+      </select>
       <button type="submit">Add task</button>
     </form>
+
+    <label class="focus-toggle">
+      <input type="checkbox" id="focus-mode">
+      Focus mode (show just one task at a time)
+    </label>
 
     <section>
       <h2>Active tasks</h2>
