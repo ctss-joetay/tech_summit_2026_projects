@@ -1,0 +1,21 @@
+{
+  "gid": "g01",
+  "contexts": [
+    {
+      "id": "001",
+      "date": "2026-08-26",
+      "topic": "task-tracker-with-banner",
+      "files_touched": [
+        "script.js",
+        "index.html"
+      ],
+      "decisions": [
+        "Banner cycles through active tasks every 3 seconds instead of showing all at once"
+      ],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "001-2026-08-26-task-tracker-with-banner.md"
+    }
+  ],
+  "last_summary_ts": 1787709575.7035317
+}
