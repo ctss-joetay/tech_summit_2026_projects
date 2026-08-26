@@ -1,4 +1,24 @@
 {
   "gid": "g12",
-  "contexts": []
+  "contexts": [
+    {
+      "id": "001",
+      "date": "2026-08-26",
+      "topic": "open-world-roguelike-rpg",
+      "files_touched": [
+        "script.js",
+        "index.html"
+      ],
+      "decisions": [
+        "Used Open-Meteo for weather (no API key, browser-callable)",
+        "Used Hacker News API for entertainment news (free, no key, CORS-friendly)",
+        "Replaced exercise/weather/news app with a new game called Wanderland: 15x15 grid open-world RPG with random battles, HP/XP/leveling, and town healing",
+        "Used Summit.save for persisting player stats and world layout"
+      ],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "001-2026-08-26-open-world-roguelike-rpg.md"
+    }
+  ],
+  "last_summary_ts": 1787731517.299964
 }

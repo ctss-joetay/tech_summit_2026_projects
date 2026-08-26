@@ -3,14 +3,47 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>My Project</title>
+  <title>Wanderland — Open World RPG</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <main>
-    <h1>Hello, Tech Summit!</h1>
-    <p>Edit this page in the IDE, or ask the AI to build something.</p>
+    <h1>Wanderland</h1>
+    <p class="hint">Move with the ▲◀▼▶ buttons below. Explore the open world. Watch out for monsters.</p>
+
+    <div id="hud">
+      <div>Lvl <span id="level">1</span></div>
+      <div>HP <span id="hp">20</span>/<span id="maxHp">20</span></div>
+      <div>XP <span id="xp">0</span>/<span id="xpNext">10</span></div>
+      <div>Gold <span id="gold">0</span></div>
+    </div>
+
+    <canvas id="game" width="480" height="480"></canvas>
+
+    <div id="dpad">
+      <button id="upBtn" class="pad-btn">▲</button>
+      <div class="pad-row">
+        <button id="leftBtn" class="pad-btn">◀</button>
+        <button id="downBtn" class="pad-btn">▼</button>
+        <button id="rightBtn" class="pad-btn">▶</button>
+      </div>
+    </div>
+
+    <p id="log">Welcome, wanderer. Step onto the grass to begin your journey.</p>
+
+    <div id="battle" class="hidden">
+      <h2 id="battleTitle">A wild Slime appears!</h2>
+      <div id="battleStats">
+        <div>You: <span id="battleHp"></span> HP</div>
+        <div id="enemyName">Slime</div>: <span id="enemyHp"></span> HP
+      </div>
+      <button id="attackBtn">Attack</button>
+      <button id="fleeBtn">Flee</button>
+      <p id="battleLog"></p>
+    </div>
   </main>
+
+  <script src="_summit/runtime.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

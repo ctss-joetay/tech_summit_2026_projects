@@ -1,11 +1,89 @@
+:root {
+  --accent: #4f9d5f;
+  --bg: #14171c;
+  --panel: #1f242c;
+  --text: #e8e8e8;
+}
 * { box-sizing: border-box; margin: 0; }
 body {
   font-family: system-ui, sans-serif;
-  background: #fafafa;
-  color: #1a1a1a;
+  background: var(--bg);
+  color: var(--text);
   display: grid;
   place-items: center;
   min-height: 100vh;
+  padding: 1rem;
 }
-main { text-align: center; }
-h1 { margin-bottom: 0.5rem; }
+main { text-align: center; max-width: 520px; }
+h1 { margin-bottom: 0.25rem; color: var(--accent); }
+.hint { font-size: 0.85rem; color: #aaa; margin-bottom: 0.75rem; }
+
+#hud {
+  display: flex;
+  justify-content: space-between;
+  background: var(--panel);
+  padding: 0.5rem 1rem;
+  border-radius: 8px 8px 0 0;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+canvas {
+  display: block;
+  background: #000;
+  border-radius: 0 0 8px 8px;
+  image-rendering: pixelated;
+  margin: 0 auto;
+  outline: none;
+}
+canvas:focus { box-shadow: 0 0 0 3px var(--accent); }
+
+#dpad {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+.pad-row { display: flex; gap: 0.25rem; }
+.pad-btn {
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  width: 3rem;
+  height: 3rem;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+.pad-btn:hover { filter: brightness(1.2); }
+.pad-btn:active { background: var(--accent); }
+
+#log {
+  margin-top: 0.75rem;
+  min-height: 1.2rem;
+  color: #ccc;
+  font-size: 0.9rem;
+}
+
+#battle {
+  margin-top: 1rem;
+  background: var(--panel);
+  border: 2px solid var(--accent);
+  border-radius: 8px;
+  padding: 1rem;
+}
+#battle.hidden { display: none; }
+#battleStats { display: flex; justify-content: space-between; margin: 0.5rem 0; }
+#battle button {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  margin: 0.25rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+#battle button:hover { filter: brightness(1.1); }
+#battleLog { margin-top: 0.5rem; font-size: 0.85rem; color: #ddd; min-height: 1.2rem; }
