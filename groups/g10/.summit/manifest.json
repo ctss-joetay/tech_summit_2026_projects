@@ -1,4 +1,90 @@
 {
   "gid": "g10",
-  "contexts": []
+  "contexts": [
+    {
+      "id": "001",
+      "date": "2026-08-26",
+      "topic": "flappy-bird-game",
+      "files_touched": [
+        "script.js",
+        "index.html"
+      ],
+      "decisions": [],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "001-2026-08-26-flappy-bird-game.md"
+    },
+    {
+      "id": "002",
+      "date": "2026-08-26",
+      "topic": "reduce-click-delay",
+      "files_touched": [],
+      "decisions": [
+        "Use pointerdown instead of click to avoid ~300ms tap delay",
+        "Disable touch gestures on canvas to prevent scroll conflicts"
+      ],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "002-2026-08-26-reduce-click-delay.md"
+    },
+    {
+      "id": "003",
+      "date": "2026-08-26",
+      "topic": "scoreboard-position-fix",
+      "files_touched": [
+        "index.html"
+      ],
+      "decisions": [],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "003-2026-08-26-scoreboard-position-fix.md"
+    },
+    {
+      "id": "004",
+      "date": "2026-08-26",
+      "topic": "ceiling-collision-fix",
+      "files_touched": [],
+      "decisions": [
+        "Ceiling now acts as a solid wall stopping the bird instead of ending the game; only floor/pipe collisions end the run"
+      ],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "004-2026-08-26-ceiling-collision-fix.md"
+    },
+    {
+      "id": "005",
+      "date": "2026-08-26",
+      "topic": "pipe-speed-increase",
+      "files_touched": [
+        "script.js"
+      ],
+      "decisions": [
+        "Increase pipeSpeed by 0.5 every 5 points, reset speed on new game"
+      ],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "005-2026-08-26-pipe-speed-increase.md"
+    },
+    {
+      "id": "006",
+      "date": "2026-08-26",
+      "topic": "arena-bots-shooter-game",
+      "files_touched": [
+        "script.js",
+        "index.html",
+        "style.css"
+      ],
+      "decisions": [
+        "Replaced Flappy Bird with a single-player top-down arena shooter vs AI bots since real multiplayer matchmaking isn't feasible client-side",
+        "Difficulty scales with score instead of real matchmaking, framed as avoiding 'bad randoms'",
+        "Used pointer events (pointerdown/pointermove) instead of mouse events to support iPad taps for shooting and aiming",
+        "Player drawn as a rotating arrow/triangle pointing toward aim direction",
+        "Canvas made responsive via CSS scaling with getGamePos() to translate tap coordinates correctly"
+      ],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "006-2026-08-26-arena-bots-shooter-game.md"
+    }
+  ],
+  "last_summary_ts": 1787736137.000843
 }

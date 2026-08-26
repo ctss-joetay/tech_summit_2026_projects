@@ -3,14 +3,21 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>My Project</title>
+  <title>Arena Bots</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <main>
-    <h1>Hello, Tech Summit!</h1>
-    <p>Edit this page in the IDE, or ask the AI to build something.</p>
+    <h1>Arena Bots</h1>
+    <p>Move with <strong>WASD</strong> or arrow keys. Click to shoot toward your mouse.</p>
+    <div id="game-wrap">
+      <canvas id="game" width="600" height="500"></canvas>
+      <p id="hud">Score: 0 &nbsp;|&nbsp; HP: 100</p>
+    </div>
+    <p id="best">Best score: 0</p>
+    <p id="message">Click the game to start!</p>
   </main>
+  <script src="_summit/runtime.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
