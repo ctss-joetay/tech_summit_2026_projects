@@ -10,7 +10,8 @@ const bannerText = document.getElementById("banner-text");
 const bannerPauseBtn = document.getElementById("banner-pause");
 const focusToggle = document.getElementById("focus-mode");
 const celebration = document.getElementById("celebration");
-const treeEmoji = document.getElementById("tree-emoji");
+const treeBox = document.getElementById("tree-box");
+const treeVisual = document.getElementById("tree-visual");
 const treeCaption = document.getElementById("tree-caption");
 
 const mainView = document.getElementById("main-view");
@@ -27,8 +28,72 @@ let openTaskId = null;
 
 const PRIORITY_ORDER = { high: 0, medium: 1, low: 2 };
 
-// Tree grows a stage for every couple of completed tasks.
-const TREE_STAGES = ["🌱", "🌿", "🌳", "🌳🍎", "🌲🌳🌲"];
+// ---- Hand-drawn tree illustrations (inline SVG, sketchy line art) ----
+// A single tree grows through 4 stages as tasks are completed: sapling ->
+// young -> flowering -> fruiting. Once a tree fully fruits, a brand new
+// sapling starts growing beside it, and the process repeats forever.
+
+const COMPLETIONS_PER_TREE = 4; // how many completed tasks it takes to fully fruit one tree
+const STAGE_NAMES = ["sapling", "young", "flower", "fruit"];
+
+// A single hand-drawn tree, at a given "stage": sapling, young, flower, fruit.
+// x/scale let us draw several side by side in the grove.
+function drawTree(stage, x = 40, scale = 1) {
+  const s = scale;
+  const gy = 92; // ground line y
+  if (stage === "sapling") {
+    return `
+      <path d="M ${x} ${gy} C ${x - 2 * s} ${gy - 10 * s}, ${x + 3 * s} ${gy - 16 * s}, ${x} ${gy - 26 * s}"
+            fill="none" stroke="var(--accent-dark)" stroke-width="${2.2 * s}" stroke-linecap="round"/>
+      <path d="M ${x} ${gy - 14 * s} C ${x - 10 * s} ${gy - 20 * s}, ${x - 14 * s} ${gy - 10 * s}, ${x - 4 * s} ${gy - 8 * s}"
+            fill="none" stroke="var(--low)" stroke-width="${2 * s}" stroke-linecap="round"/>
+      <path d="M ${x} ${gy - 20 * s} C ${x + 10 * s} ${gy - 25 * s}, ${x + 14 * s} ${gy - 15 * s}, ${x + 4 * s} ${gy - 14 * s}"
+            fill="none" stroke="var(--low)" stroke-width="${2 * s}" stroke-linecap="round"/>
+    `;
+  }
+
+  // trunk shared by young/flower/fruit stages, just a bit taller each time
+  const trunkTop = stage === "young" ? gy - 34 * s : gy - 40 * s;
+  const canopyR = stage === "young" ? 16 * s : 20 * s;
+  const canopyCy = trunkTop - canopyR * 0.6;
+
+  let extras = "";
+  if (stage === "flower") {
+    const dots = [-10, -3, 6, 12, -14, 2];
+    extras = dots
+      .map((dx, i) => {
+        const dy = -6 + (i % 3) * 6;
+        return `<circle cx="${x + dx * s}" cy="${canopyCy + dy * s}" r="${2 * s}" fill="var(--flower, #e8b3c0)"/>`;
+      })
+      .join("");
+  } else if (stage === "fruit") {
+    const dots = [-9, -1, 8, 13, -13, 3];
+    extras = dots
+      .map((dx, i) => {
+        const dy = -4 + (i % 3) * 7;
+        return `<circle cx="${x + dx * s}" cy="${canopyCy + dy * s}" r="${2.4 * s}" fill="var(--high)"/>`;
+      })
+      .join("");
+  }
+
+  // wobbly canopy outline drawn as an irregular closed path, hand-drawn look
+  const r = canopyR;
+  const canopyPath = `
+    M ${x - r} ${canopyCy}
+    C ${x - r} ${canopyCy - r * 1.1}, ${x - r * 0.3} ${canopyCy - r * 1.3}, ${x} ${canopyCy - r}
+    C ${x + r * 0.5} ${canopyCy - r * 1.25}, ${x + r * 1.05} ${canopyCy - r * 0.4}, ${x + r} ${canopyCy}
+    C ${x + r * 1.1} ${canopyCy + r * 0.7}, ${x + r * 0.3} ${canopyCy + r * 1.05}, ${x} ${canopyCy + r * 0.8}
+    C ${x - r * 0.4} ${canopyCy + r * 1.1}, ${x - r} ${canopyCy + r * 0.6}, ${x - r} ${canopyCy}
+    Z
+  `;
+
+  return `
+    <path d="M ${x} ${gy} C ${x - 2 * s} ${gy - 15 * s}, ${x + 2 * s} ${gy - 22 * s}, ${x} ${trunkTop}"
+          fill="none" stroke="var(--accent-dark)" stroke-width="${3 * s}" stroke-linecap="round"/>
+    <path d="${canopyPath}" fill="none" stroke="var(--accent-dark)" stroke-width="${2 * s}" stroke-linejoin="round"/>
+    ${extras}
+  `;
+}
 
 async function loadTasks() {
   const saved = await Summit.load("tasks");
@@ -66,12 +131,33 @@ function render() {
 }
 
 function updateTree(completedCount) {
-  const stageIndex = Math.min(Math.floor(completedCount / 2), TREE_STAGES.length - 1);
-  treeEmoji.textContent = TREE_STAGES[stageIndex];
-  if (completedCount === 0) {
-    treeCaption.textContent = "Complete tasks to grow your tree!";
-  } else {
-    treeCaption.textContent = `${completedCount} task(s) completed — keep it growing!`;
+  const fullTrees = Math.floor(completedCount / COMPLETIONS_PER_TREE);
+  const remainder = completedCount % COMPLETIONS_PER_TREE;
+  const totalTrees = fullTrees + 1; // fully fruited trees, plus the one currently growing
+
+  // As the grove gets bigger, shrink each tree a bit so they all still fit.
+  const scale = totalTrees <= 4 ? 1 : Math.max(0.45, 4 / totalTrees);
+  const spacing = 30 * scale;
+  const width = spacing * totalTrees + 20;
+
+  let markup = "";
+  for (let i = 0; i < fullTrees; i++) {
+    markup += drawTree("fruit", 20 + i * spacing, scale);
+  }
+  markup += drawTree(STAGE_NAMES[remainder], 20 + fullTrees * spacing, scale);
+
+  const isGrove = totalTrees >= 4; // 3+ fruited trees plus a new sapling: let it take over
+  const displayWidth = isGrove ? Math.min(width * 1.3, 340) : 70;
+
+  treeVisual.innerHTML = `<svg viewBox="0 0 ${width} 100" width="${displayWidth}" height="90">${markup}</svg>`;
+
+  treeBox.classList.toggle("grove-mode", isGrove);
+  treeCaption.hidden = isGrove;
+  if (!isGrove) {
+    treeCaption.textContent =
+      completedCount === 0
+        ? "Complete tasks to grow your tree!"
+        : `${completedCount} task(s) completed — keep it growing!`;
   }
 }
 

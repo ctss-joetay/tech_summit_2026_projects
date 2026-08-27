@@ -68,7 +68,23 @@
       ],
       "reason": "task-complete",
       "file": "004-2026-08-27-task-notes-and-tree.md"
+    },
+    {
+      "id": "005",
+      "date": "2026-08-27",
+      "topic": "hand-drawn-tree-svg",
+      "files_touched": [
+        "script.js",
+        "index.html"
+      ],
+      "decisions": [
+        "Replaced emoji tree with inline SVG line-art tree stages (sapling, young tree, flowering, fruiting, grove) in brown/beige palette",
+        "Tree grows a stage every 2 completed tasks"
+      ],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "005-2026-08-27-hand-drawn-tree-svg.md"
     }
   ],
-  "last_summary_ts": 1787798031.0284352
+  "last_summary_ts": 1787805012.9819832
 }

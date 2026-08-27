@@ -1,0 +1,1 @@
+- [2026-08-27 09:07] Tree redesigned: single tree grows through 4 stages per completion cycle (COMPLETIONS_PER_TREE=4), then a new sapling starts beside it, forming a growing forest; caption hides once 4+ trees exist (grove-mode).
