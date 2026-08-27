@@ -32,7 +32,43 @@
       "open_questions": [],
       "reason": "task-complete",
       "file": "002-2026-08-26-adhd-friendly-task-features.md"
+    },
+    {
+      "id": "003",
+      "date": "2026-08-27",
+      "topic": "cafe-notebook-ui-theme",
+      "files_touched": [
+        "index.html",
+        "script.js"
+      ],
+      "decisions": [
+        "Kept grid-paper layout but switched palette to brown/beige instead of lavender",
+        "No multi-agent harness; single model directly edits plain HTML/CSS/JS files"
+      ],
+      "open_questions": [
+        "Which final theme (lined vs grid) to keep permanently, though grid+brown seems favored"
+      ],
+      "reason": "task-complete",
+      "file": "003-2026-08-27-cafe-notebook-ui-theme.md"
+    },
+    {
+      "id": "004",
+      "date": "2026-08-27",
+      "topic": "task-notes-and-tree",
+      "files_touched": [
+        "script.js",
+        "index.html"
+      ],
+      "decisions": [
+        "Made the grid theme (style-cafe-grid.css) the permanent stylesheet and removed the theme switcher and Option A code",
+        "Tree growth is based on total completed task count with multiple visual stages rather than one tree per task"
+      ],
+      "open_questions": [
+        "Whether to fully delete/empty the unused style-cafe-lined.css file"
+      ],
+      "reason": "task-complete",
+      "file": "004-2026-08-27-task-notes-and-tree.md"
     }
   ],
-  "last_summary_ts": 1787725933.9232507
+  "last_summary_ts": 1787798031.0284352
 }
