@@ -120,7 +120,56 @@
       "open_questions": [],
       "reason": "task-complete",
       "file": "007-2026-09-01-priority-toggle-and-wood-panel.md"
+    },
+    {
+      "id": "008",
+      "date": "2026-09-01",
+      "topic": "edit-cost-explanation",
+      "files_touched": [],
+      "decisions": [],
+      "open_questions": [],
+      "reason": "publish",
+      "file": "008-2026-09-01-edit-cost-explanation.md"
+    },
+    {
+      "id": "009",
+      "date": "2026-09-01",
+      "topic": "remove-unused-lined-css",
+      "files_touched": [],
+      "decisions": [
+        "Deleted style-cafe-lined.css since index.html only links style-cafe-grid.css; left style.css untouched as it wasn't explicitly requested"
+      ],
+      "open_questions": [
+        "Whether the unused style.css leftover file should also be deleted"
+      ],
+      "reason": "task-complete",
+      "file": "009-2026-09-01-remove-unused-lined-css.md"
+    },
+    {
+      "id": "010",
+      "date": "2026-09-01",
+      "topic": "session",
+      "files_touched": [],
+      "decisions": [],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "010-2026-09-01-session.md"
+    },
+    {
+      "id": "011",
+      "date": "2026-09-01",
+      "topic": "note-icon-indicator",
+      "files_touched": [
+        "script.js",
+        "style.css"
+      ],
+      "decisions": [
+        "Note pencil icon uses inline SVG (no image assets) and only renders when task.notes is non-empty, hiding again when notes are cleared"
+      ],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "011-2026-09-01-note-icon-indicator.md"
     }
   ],
-  "last_summary_ts": 1788253872.771781
+  "last_summary_ts": 1788254953.1125417
 }

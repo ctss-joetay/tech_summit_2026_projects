@@ -198,6 +198,14 @@ function buildTaskRow(task) {
   span.title = "Click to open notes for this task";
   span.addEventListener("click", () => openNotes(task.id));
 
+  if (task.notes && task.notes.trim()) {
+    const noteIcon = document.createElement("span");
+    noteIcon.className = "note-icon";
+    noteIcon.title = "This task has notes";
+    noteIcon.innerHTML = PENCIL_ICON_SVG;
+    span.appendChild(noteIcon);
+  }
+
   const removeBtn = document.createElement("button");
   removeBtn.className = "remove";
   removeBtn.textContent = "✕";
@@ -235,6 +243,9 @@ notesText.addEventListener("input", () => {
   task.notes = notesText.value;
   saveTasks();
 });
+
+// Small pencil icon shown next to a task's name when it has notes saved.
+const PENCIL_ICON_SVG = `<svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M11 1.5 14.5 5 5 14.5 1.5 15.5 2.5 12 12 2.5Z"/><path d="M9.5 3 13 6.5"/></svg>`;
 
 const CELEBRATIONS = ["Nice work! 🎉", "Task down! 💪", "You did it! ✅", "One less thing to think about!"];
 

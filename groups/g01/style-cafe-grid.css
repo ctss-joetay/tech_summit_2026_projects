@@ -246,6 +246,14 @@ li span.task-text:hover {
   color: var(--accent-dark);
 }
 
+.note-icon {
+  display: inline-flex;
+  margin-left: 0.4rem;
+  color: var(--accent-dark);
+  opacity: 0.75;
+  vertical-align: middle;
+}
+
 li.completed span {
   color: var(--done);
   text-decoration: line-through;
