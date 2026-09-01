@@ -16,37 +16,37 @@
   <div id="celebration" class="celebration" hidden></div>
 
   <main id="main-view">
-    <h1>Task Tracker</h1>
+    <div class="wood-panel">
+      <h1>Task Tracker</h1>
 
-    <div id="tree-box" class="tree-box">
-      <div id="tree-visual"></div>
-      <span id="tree-caption">Complete tasks to grow your tree!</span>
+      <div id="tree-box" class="tree-box">
+        <div id="tree-visual"></div>
+        <span id="tree-caption">Complete tasks to grow your tree!</span>
+      </div>
+
+      <form id="task-form">
+        <input id="task-input" type="text" placeholder="What needs doing?" autocomplete="off" required>
+        <button id="priority-toggle" type="button" class="priority-btn priority-btn-medium" title="Click to change priority" data-priority="medium">Medium</button>
+        <button type="submit">Add task</button>
+      </form>
+
+      <label class="focus-toggle">
+        <input type="checkbox" id="focus-mode">
+        Focus mode (show just one task at a time)
+      </label>
     </div>
 
-    <form id="task-form">
-      <input id="task-input" type="text" placeholder="What needs doing?" autocomplete="off" required>
-      <select id="priority-input" title="Priority">
-        <option value="low">Low</option>
-        <option value="medium" selected>Medium</option>
-        <option value="high">High</option>
-      </select>
-      <button type="submit">Add task</button>
-    </form>
+    <div class="paper-panel">
+      <section>
+        <h2>Active tasks</h2>
+        <ul id="task-list"></ul>
+      </section>
 
-    <label class="focus-toggle">
-      <input type="checkbox" id="focus-mode">
-      Focus mode (show just one task at a time)
-    </label>
-
-    <section>
-      <h2>Active tasks</h2>
-      <ul id="task-list"></ul>
-    </section>
-
-    <section>
-      <h2>Retired (completed)</h2>
-      <ul id="completed-list"></ul>
-    </section>
+      <section>
+        <h2>Retired (completed)</h2>
+        <ul id="completed-list"></ul>
+      </section>
+    </div>
   </main>
 
   <main id="notes-view" hidden>

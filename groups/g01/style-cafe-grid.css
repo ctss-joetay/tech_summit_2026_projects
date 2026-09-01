@@ -73,14 +73,33 @@ body {
 main {
   max-width: 500px;
   margin: 2rem auto;
-  padding: 2rem 1.75rem 2.5rem;
+  border-radius: 18px;
+  box-shadow: 0 8px 22px rgba(120, 90, 50, 0.2);
+  overflow: hidden;
+}
+
+.wood-panel {
+  padding: 2rem 1.75rem 1.5rem;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.08) 0px,
+      rgba(0, 0, 0, 0.08) 2px,
+      transparent 2px,
+      transparent 26px
+    ),
+    linear-gradient(180deg, #6b4a30, #4a3220);
+  border-bottom: 4px solid var(--accent-dark);
+}
+
+.paper-panel {
+  padding: 1.5rem 1.75rem 2.5rem;
   background:
     linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0 / 1.4rem 1.4rem,
     linear-gradient(var(--grid) 1px, transparent 1px) 0 0 / 1.4rem 1.4rem,
     var(--paper);
-  border-radius: 18px;
-  box-shadow: 0 8px 22px rgba(120, 90, 50, 0.2);
   border: 2px solid var(--grid);
+  border-top: none;
 }
 
 h1 {
@@ -88,7 +107,7 @@ h1 {
   text-align: center;
   font-family: 'Caveat', cursive;
   font-size: 2.8rem;
-  color: var(--accent-dark);
+  color: #f3e4cf;
 }
 
 h2 {
@@ -102,8 +121,8 @@ h2 {
   display: flex;
   align-items: center;
   gap: 0.8rem;
-  background: rgba(255, 255, 255, 0.55);
-  border: 2px dashed var(--grid);
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px dashed #d9c19a;
   border-radius: 14px;
   padding: 0.6rem 1rem;
   margin-bottom: 1.4rem;
@@ -158,6 +177,23 @@ h2 {
   box-shadow: inset 0 0 0 2px var(--grid);
 }
 
+.priority-btn {
+  padding: 0.55rem 0.9rem;
+  font-size: 0.95rem;
+  font-family: inherit;
+  font-weight: 700;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  color: white;
+  min-width: 90px;
+  transition: background 0.15s;
+}
+
+.priority-btn-low { background: var(--low); }
+.priority-btn-medium { background: var(--medium); }
+.priority-btn-high { background: var(--high); }
+
 button {
   padding: 0.55rem 1.1rem;
   font-size: 1rem;
@@ -178,7 +214,7 @@ button:hover { background: var(--accent-dark); }
   gap: 0.5rem;
   margin-top: 0.9rem;
   font-size: 0.95rem;
-  color: var(--text);
+  color: #f3e4cf;
 }
 
 ul { list-style: none; }

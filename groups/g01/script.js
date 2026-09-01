@@ -2,7 +2,7 @@
 
 const form = document.getElementById("task-form");
 const input = document.getElementById("task-input");
-const priorityInput = document.getElementById("priority-input");
+const priorityToggle = document.getElementById("priority-toggle");
 const taskList = document.getElementById("task-list");
 const completedList = document.getElementById("completed-list");
 const banner = document.getElementById("reminder-banner");
@@ -27,6 +27,22 @@ let bannerPaused = false;
 let openTaskId = null;
 
 const PRIORITY_ORDER = { high: 0, medium: 1, low: 2 };
+const PRIORITY_CYCLE = ["low", "medium", "high"];
+
+// Clicking the priority button cycles low -> medium -> high -> low, instead
+// of a dropdown, so adding a task with a priority is a single click.
+priorityToggle.addEventListener("click", () => {
+  const current = priorityToggle.dataset.priority;
+  const next = PRIORITY_CYCLE[(PRIORITY_CYCLE.indexOf(current) + 1) % PRIORITY_CYCLE.length];
+  setPriorityButton(next);
+});
+
+function setPriorityButton(priority) {
+  priorityToggle.dataset.priority = priority;
+  priorityToggle.textContent = priority.charAt(0).toUpperCase() + priority.slice(1);
+  priorityToggle.classList.remove("priority-btn-low", "priority-btn-medium", "priority-btn-high");
+  priorityToggle.classList.add(`priority-btn-${priority}`);
+}
 
 // ---- Hand-drawn tree illustrations (inline SVG, sketchy line art) ----
 // A single tree grows through 4 stages as tasks are completed: sapling ->
@@ -268,11 +284,13 @@ form.addEventListener("submit", (e) => {
   const text = input.value.trim();
   if (!text) return;
 
-  tasks.push({ id: Date.now(), text, done: false, priority: priorityInput.value, notes: "" });
+  tasks.push({ id: Date.now(), text, done: false, priority: priorityToggle.dataset.priority, notes: "" });
   input.value = "";
   input.focus();
+  setPriorityButton("medium");
   saveTasks();
   render();
 });
 
+setPriorityButton("medium");
 loadTasks();

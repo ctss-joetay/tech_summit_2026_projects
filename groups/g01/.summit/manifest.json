@@ -84,7 +84,43 @@
       "open_questions": [],
       "reason": "task-complete",
       "file": "005-2026-08-27-hand-drawn-tree-svg.md"
+    },
+    {
+      "id": "006",
+      "date": "2026-08-27",
+      "topic": "growing-tree-grove-feature",
+      "files_touched": [
+        "script.js",
+        "index.html"
+      ],
+      "decisions": [
+        "Each tree takes 4 completed tasks to progress sapling\u2192young\u2192flowering\u2192fruiting",
+        "On fruiting, a new sapling spawns beside it, repeating indefinitely",
+        "Trees shrink and box widens as more trees appear",
+        "At 4+ trees, grove mode activates: box centers/grows and the caption text disappears"
+      ],
+      "open_questions": [
+        "Whether to delete unused CSS files (from earlier brief update)"
+      ],
+      "reason": "publish",
+      "file": "006-2026-08-27-growing-tree-grove-feature.md"
+    },
+    {
+      "id": "007",
+      "date": "2026-09-01",
+      "topic": "priority-toggle-and-wood-panel",
+      "files_touched": [
+        "script.js",
+        "index.html"
+      ],
+      "decisions": [
+        "Replaced priority <select> dropdown with a cyclic click-to-toggle button (Low\u2192Medium\u2192High\u2192Low), color-coded per priority, resets to Medium after adding a task",
+        "Split main layout into .wood-panel (title through focus-mode checkbox, dark wood background, no grid paper) and .paper-panel (Active tasks and below, grid paper background) for visual separation"
+      ],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "007-2026-09-01-priority-toggle-and-wood-panel.md"
     }
   ],
-  "last_summary_ts": 1787805012.9819832
+  "last_summary_ts": 1788253872.771781
 }
