@@ -69,7 +69,24 @@
       "open_questions": [],
       "reason": "publish",
       "file": "004-2026-09-02-rate-command-terminal-ui.md"
+    },
+    {
+      "id": "005",
+      "date": "2026-09-02",
+      "topic": "split-terminal-cli-log",
+      "files_touched": [
+        "script.js",
+        "index.html"
+      ],
+      "decisions": [
+        "Split terminal into two vertical panes: left EVENT LOG for arrivals/departures/warnings, right CLI OUTPUT for command echoes/results",
+        "Moved live table boxes to their own row below the split panes to avoid cramping",
+        "Made CLI input visually boxed with border and dark background, auto-focused, since it was previously easy to miss"
+      ],
+      "open_questions": [],
+      "reason": "publish",
+      "file": "005-2026-09-02-split-terminal-cli-log.md"
     }
   ],
-  "last_summary_ts": 1788341206.8010461
+  "last_summary_ts": 1788341448.0696118
 }
