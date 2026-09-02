@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vendor Dashboard — CTSS Canteen</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <h1>📊 Vendor Dashboard</h1>
+    <p class="tagline">All pre-orders sent so far, and the total sales.</p>
+    <p><a href="index.html">&larr; Back to ordering page</a></p>
+  </header>
+
+  <main>
+    <section class="dashboard-summary">
+      <div class="summary-card">
+        <span class="summary-label">Total orders</span>
+        <span id="total-orders" class="summary-value">0</span>
+      </div>
+      <div class="summary-card">
+        <span class="summary-label">Total sales</span>
+        <span id="total-sales" class="summary-value">$0.00</span>
+      </div>
+    </section>
+
+    <section class="dashboard-orders">
+      <h2>Order history</h2>
+      <table id="orders-table" class="orders-table">
+        <thead>
+          <tr>
+            <th>Order #</th>
+            <th>Stall</th>
+            <th>Items</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody id="orders-tbody">
+          <tr><td colspan="4" class="empty-msg">Loading orders…</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <footer class="site-footer">Built for the CTSS long-queue problem — order ahead, eat on time.</footer>
+
+  <script src="_summit/runtime.js"></script>
+  <script src="dashboard.js"></script>
+</body>
+</html>
+</content>
