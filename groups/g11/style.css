@@ -100,29 +100,33 @@ body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.6rem 1rem 0.9rem;
+  padding: 0.75rem 1rem;
+  margin: 0 1rem 1rem;
   color: var(--accent);
+  background: #050805;
+  border: 1px solid var(--accent-dim);
+  border-radius: 4px;
 }
 
 .cli-prefix {
   color: var(--accent);
   white-space: nowrap;
+  font-weight: 700;
 }
 
 .cli-input {
   flex: 1;
   background: transparent;
   border: none;
-  border-bottom: 1px solid var(--border);
-  color: var(--text);
+  color: var(--accent);
   font-family: "IBM Plex Mono", monospace;
-  font-size: 0.85rem;
-  padding: 0.25rem 0;
+  font-size: 0.95rem;
+  padding: 0.15rem 0;
   outline: none;
 }
 
-.cli-input:focus {
-  border-bottom-color: var(--accent);
+.cli-input::placeholder {
+  color: var(--accent-dim);
 }
 
 .split {
@@ -131,8 +135,27 @@ body {
   border-bottom: 1px solid var(--border);
 }
 
+.pane {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.pane:first-child {
+  border-right: 1px solid var(--border);
+}
+
+.pane-title {
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  color: var(--accent-dim);
+  padding: 0.4rem 1rem;
+  border-bottom: 1px solid var(--border);
+  background: #0c110d;
+}
+
 .log-window {
-  height: 320px;
+  height: 260px;
   overflow-y: auto;
   padding: 0.75rem 1rem;
   font-size: 0.85rem;
@@ -140,11 +163,14 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
-  border-right: 1px solid var(--border);
+}
+
+.tables-section {
+  border-bottom: 1px solid var(--border);
 }
 
 .tables-panel {
-  height: 320px;
+  height: 260px;
   overflow-y: auto;
   padding: 0.75rem 1rem;
   font-size: 0.78rem;
@@ -182,7 +208,8 @@ body {
 
 @media (max-width: 640px) {
   .split { grid-template-columns: 1fr; }
-  .log-window { border-right: none; border-bottom: 1px solid var(--border); height: 220px; }
+  .pane:first-child { border-right: none; border-bottom: 1px solid var(--border); }
+  .log-window { height: 200px; }
   .tables-panel { height: 220px; }
   .stats { grid-template-columns: repeat(2, 1fr); }
 }

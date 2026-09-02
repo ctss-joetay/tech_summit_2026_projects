@@ -3,6 +3,7 @@
 // and a CLI for controlling capacity and table occupancy.
 
 const logWindow = document.getElementById("log-window");
+const cliOutput = document.getElementById("cli-output");
 const tablesPanel = document.getElementById("tables-panel");
 const cliInput = document.getElementById("cli-input");
 const capacityReadout = document.getElementById("capacity-readout");
@@ -65,6 +66,22 @@ function logLine(text, cls = "") {
 function clearLog() {
   logWindow.innerHTML = "";
   logLine("log cleared", "boot");
+}
+
+function cliLine(text, cls = "") {
+  const line = document.createElement("div");
+  line.className = "log-line" + (cls ? " " + cls : "");
+  line.textContent = text;
+  cliOutput.appendChild(line);
+  cliOutput.scrollTop = cliOutput.scrollHeight;
+  while (cliOutput.children.length > 200) {
+    cliOutput.removeChild(cliOutput.firstChild);
+  }
+}
+
+function clearCliOutput() {
+  cliOutput.innerHTML = "";
+  cliLine("cli output cleared", "boot");
 }
 
 function timestamp() {
@@ -189,7 +206,8 @@ function tick(deltaSeconds) {
 const HELP_TEXT = [
   "available commands:",
   "  help                     show this list",
-  "  clear                    clear the log window",
+  "  clear                    clear the cli output pane",
+  "  clear-log                clear the event log pane",
   "  set-capacity <#> <n>     set table <#>'s capacity to n (1-20)",
   "  occ <#> <n>              manually set table <#>'s occupancy to n",
   "  list                     print current state of all tables",
@@ -200,22 +218,27 @@ const HELP_TEXT = [
 function runCommand(raw) {
   const input = raw.trim();
   if (!input) return;
-  logLine(`> ${input}`, "boot");
+  cliLine(`> ${input}`, "boot");
   const parts = input.split(/\s+/);
   const cmd = parts[0].toLowerCase();
 
   if (cmd === "help") {
-    HELP_TEXT.forEach((line) => logLine(line, "boot"));
+    HELP_TEXT.forEach((line) => cliLine(line, "boot"));
     return;
   }
 
   if (cmd === "clear") {
+    clearCliOutput();
+    return;
+  }
+
+  if (cmd === "clear-log") {
     clearLog();
     return;
   }
 
   if (cmd === "list") {
-    tables.forEach((t) => logLine(`table ${t.id}: ${t.occ}/${t.capacity}`, "boot"));
+    tables.forEach((t) => cliLine(`table ${t.id}: ${t.occ}/${t.capacity}`, "boot"));
     return;
   }
 
@@ -225,7 +248,7 @@ function runCommand(raw) {
     servedTotal = 0;
     eatTimeSum = 0;
     eatTimeCount = 0;
-    logLine(`[${timestamp()}] simulation reset`, "boot");
+    cliLine(`[${timestamp()}] simulation reset`, "boot");
     updateStats();
     return;
   }
@@ -235,12 +258,12 @@ function runCommand(raw) {
     const n = Number(parts[2]);
     const table = tables.find((t) => t.id === tableId);
     if (!table || !Number.isFinite(n) || n < 1 || n > 20) {
-      logLine(`usage: set-capacity <table 1-${TABLE_COUNT}> <capacity 1-20>`, "warn");
+      cliLine(`usage: set-capacity <table 1-${TABLE_COUNT}> <capacity 1-20>`, "warn");
       return;
     }
     table.capacity = Math.round(n);
     if (table.occ > table.capacity) table.occ = table.capacity;
-    logLine(`[${timestamp()}] table ${table.id} capacity set to ${table.capacity}`, "boot");
+    cliLine(`[${timestamp()}] table ${table.id} capacity set to ${table.capacity}`, "boot");
     updateStats();
     return;
   }
@@ -250,11 +273,11 @@ function runCommand(raw) {
     const n = Number(parts[2]);
     const table = tables.find((t) => t.id === tableId);
     if (!table || !Number.isFinite(n) || n < 0) {
-      logLine(`usage: occ <table 1-${TABLE_COUNT}> <occupancy>`, "warn");
+      cliLine(`usage: occ <table 1-${TABLE_COUNT}> <occupancy>`, "warn");
       return;
     }
     table.occ = Math.min(Math.round(n), table.capacity);
-    logLine(`[${timestamp()}] table ${table.id} occupancy set to ${table.occ}/${table.capacity}`, "boot");
+    cliLine(`[${timestamp()}] table ${table.id} occupancy set to ${table.occ}/${table.capacity}`, "boot");
     updateStats();
     return;
   }
@@ -263,16 +286,16 @@ function runCommand(raw) {
     const key = (parts[1] || "").toLowerCase();
     const preset = RATE_PRESETS[key];
     if (!preset) {
-      logLine("usage: rate <quiet|normal|peak|rush>", "warn");
+      cliLine("usage: rate <quiet|normal|peak|rush>", "warn");
       return;
     }
     currentRate = preset;
     renderRateReadout();
-    logLine(`[${timestamp()}] arrival rate set to ${preset.label}`, "boot");
+    cliLine(`[${timestamp()}] arrival rate set to ${preset.label}`, "boot");
     return;
   }
 
-  logLine(`unknown command: "${cmd}" — type 'help' for a list`, "warn");
+  cliLine(`unknown command: "${cmd}" — type 'help' for a list`, "warn");
 }
 
 cliInput.addEventListener("keydown", (event) => {

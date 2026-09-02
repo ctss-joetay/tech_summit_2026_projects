@@ -53,9 +53,22 @@
       </section>
 
       <section class="split">
-        <div class="log-window" id="log-window" aria-live="polite">
-          <div class="log-line boot">canteen_ops v1.0 initialized...</div>
+        <div class="pane">
+          <div class="pane-title">EVENT LOG</div>
+          <div class="log-window" id="log-window" aria-live="polite">
+            <div class="log-line boot">canteen_ops v1.0 initialized...</div>
+          </div>
         </div>
+        <div class="pane">
+          <div class="pane-title">CLI OUTPUT</div>
+          <div class="log-window" id="cli-output" aria-live="polite">
+            <div class="log-line boot">type 'help' for a list of commands</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="tables-section">
+        <div class="pane-title">TABLE MAP</div>
         <pre class="tables-panel" id="tables-panel" aria-hidden="true"></pre>
       </section>
     </section>
