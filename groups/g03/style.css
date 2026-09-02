@@ -1,11 +1,144 @@
+/* ---------- Theme colours ---------- */
+:root {
+  --bg: #0a0e17;
+  --panel-bg: #10182b;
+  --border: #1f2b45;
+  --accent: #00e5ff;
+  --accent-2: #7cff6b;
+  --warn: #ff5566;
+  --text: #e6f1ff;
+  --text-dim: #7f8fae;
+}
+
 * { box-sizing: border-box; margin: 0; }
+
 body {
   font-family: system-ui, sans-serif;
-  background: #fafafa;
-  color: #1a1a1a;
-  display: grid;
-  place-items: center;
+  background: var(--bg);
+  color: var(--text);
   min-height: 100vh;
+  padding: 1rem;
 }
-main { text-align: center; }
-h1 { margin-bottom: 0.5rem; }
+
+/* ---------- Top bar ---------- */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  background: var(--panel-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 1rem;
+}
+.topbar h1 {
+  font-size: 1.3rem;
+  color: var(--accent);
+  text-shadow: 0 0 12px rgba(0, 229, 255, 0.5);
+}
+.connection { display: flex; align-items: center; gap: 0.6rem; }
+.dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  display: inline-block;
+}
+.dot.offline { background: var(--warn); box-shadow: 0 0 8px var(--warn); }
+.dot.online { background: var(--accent-2); box-shadow: 0 0 8px var(--accent-2); }
+
+/* ---------- Buttons ---------- */
+.btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.15s ease;
+}
+.btn:hover { border-color: var(--accent); color: var(--accent); }
+.btn.primary { background: var(--accent); color: #04141a; border-color: var(--accent); font-weight: 600; }
+.btn.primary:hover { filter: brightness(1.1); }
+.btn.mode-btn.active { background: var(--accent-2); color: #06210a; border-color: var(--accent-2); font-weight: 600; }
+
+/* ---------- Layout ---------- */
+.dashboard {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr 1fr;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.stats { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.graphs { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+@media (max-width: 720px) {
+  .dashboard, .stats, .graphs { grid-template-columns: 1fr; }
+}
+
+/* ---------- Cards ---------- */
+.stat-card, .visual-card, .controls-card, .graph-card {
+  background: var(--panel-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.2rem;
+}
+.stat-label { color: var(--text-dim); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.stat-value { font-size: 2.2rem; font-weight: 700; color: var(--accent); }
+.stat-value .unit { font-size: 1rem; color: var(--text-dim); }
+.stat-sub { margin-top: 0.4rem; font-size: 0.85rem; color: var(--text-dim); }
+
+/* ---------- Solar panel visual ---------- */
+.sky {
+  position: relative;
+  height: 220px;
+  background: linear-gradient(to bottom, #0d1b33, #142b52 70%, #1c3a1c 70%, #14431a);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.sun {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff6b0, #ffd23f 60%, transparent 100%);
+  box-shadow: 0 0 30px 10px rgba(255, 210, 63, 0.6);
+  transform: translateX(-50%);
+}
+.ground { position: absolute; bottom: 0; width: 100%; height: 40px; background: #14431a; }
+.panel-post {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  width: 6px;
+  height: 60px;
+  background: #445;
+  transform: translateX(-50%);
+}
+.panel {
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  width: 90px;
+  height: 14px;
+  background: linear-gradient(135deg, #1f6feb, #0a3a91);
+  border: 2px solid #93c5fd;
+  border-radius: 3px;
+  transform-origin: center;
+  /* transform gets set by script.js to rotate the panel */
+}
+
+/* ---------- Controls ---------- */
+.mode-toggle { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+.manual-controls { margin-top: 0.8rem; }
+.manual-controls.hidden { display: none; }
+.manual-controls label { display: block; margin-bottom: 0.4rem; color: var(--text-dim); font-size: 0.9rem; }
+#angleSlider { width: 100%; }
+.nudge-row { display: flex; gap: 0.5rem; margin-top: 0.8rem; }
+.hint { margin-top: 0.8rem; font-size: 0.85rem; color: var(--text-dim); }
+
+/* ---------- Graphs ---------- */
+.graph-card canvas { width: 100%; height: 160px; display: block; }

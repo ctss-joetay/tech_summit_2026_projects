@@ -3,14 +3,82 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>My Project</title>
+  <title>Solar Panel Control Dashboard</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <main>
-    <h1>Hello, Tech Summit!</h1>
-    <p>Edit this page in the IDE, or ask the AI to build something.</p>
+  <header class="topbar">
+    <h1>☀ Solar Panel Dashboard</h1>
+    <div class="connection">
+      <span id="connDot" class="dot offline"></span>
+      <span id="connLabel">Not connected</span>
+      <button id="connectBtn" class="btn primary">Connect</button>
+    </div>
+  </header>
+
+  <main class="dashboard">
+
+    <!-- Live numbers -->
+    <section class="stats">
+      <div class="stat-card">
+        <p class="stat-label">Electricity Output</p>
+        <p class="stat-value"><span id="powerValue">--</span> <span class="unit">kW</span></p>
+        <p class="stat-sub">Total generated: <span id="totalEnergy">0.000</span> kWh</p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-label">Light Sensor Reading</p>
+        <p class="stat-value"><span id="lightValue">--</span> <span class="unit">lux</span></p>
+        <p class="stat-sub">Sun position: <span id="sunAngleLabel">--</span>&deg;</p>
+      </div>
+    </section>
+
+    <!-- Panel visual -->
+    <section class="visual-card">
+      <p class="stat-label">Live View (simulated)</p>
+      <div class="sky">
+        <div id="sun" class="sun"></div>
+        <div class="ground"></div>
+        <div id="panelPost" class="panel-post">
+          <div id="panel" class="panel"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Controls -->
+    <section class="controls-card">
+      <p class="stat-label">Panel Control</p>
+      <div class="mode-toggle">
+        <button id="autoBtn" class="btn mode-btn active">Automatic</button>
+        <button id="manualBtn" class="btn mode-btn">Manual</button>
+      </div>
+
+      <div id="manualControls" class="manual-controls hidden">
+        <label for="angleSlider">Target angle: <span id="angleSliderValue">90</span>&deg;</label>
+        <input type="range" id="angleSlider" min="0" max="180" value="90">
+        <div class="nudge-row">
+          <button id="leftBtn" class="btn">&larr; Nudge Left</button>
+          <button id="rightBtn" class="btn">Nudge Right &rarr;</button>
+        </div>
+      </div>
+      <p id="modeHint" class="hint">Automatic mode: the motor uses the light sensor to keep the panel facing the sun.</p>
+    </section>
+
+    <!-- Graphs -->
+    <section class="graphs">
+      <div class="graph-card">
+        <p class="stat-label">Light level over time</p>
+        <canvas id="lightGraph" width="500" height="160"></canvas>
+      </div>
+      <div class="graph-card">
+        <p class="stat-label">Electricity output over time</p>
+        <canvas id="powerGraph" width="500" height="160"></canvas>
+      </div>
+    </section>
+
   </main>
+
+  <script src="_summit/runtime.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

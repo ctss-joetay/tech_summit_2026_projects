@@ -1,4 +1,16 @@
 {
   "gid": "g03",
-  "contexts": []
+  "contexts": [
+    {
+      "id": "001",
+      "date": "2026-09-02",
+      "topic": "session",
+      "files_touched": [],
+      "decisions": [],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "001-2026-09-02-session.md"
+    }
+  ],
+  "last_summary_ts": 1788340248.912934
 }
