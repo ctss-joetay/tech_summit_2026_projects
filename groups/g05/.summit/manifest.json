@@ -1,4 +1,43 @@
 {
   "gid": "g05",
-  "contexts": []
+  "contexts": [
+    {
+      "id": "001",
+      "date": "2026-09-02",
+      "topic": "ipad-control-console",
+      "files_touched": [
+        "index.html",
+        "script.js"
+      ],
+      "decisions": [
+        "Used a simple client-side password stored in script.js rather than real authentication, acceptable for classroom demo but not secure",
+        "Locking a student stops their usage timer from incrementing rather than simulating an actual device lock, since no real iPad integration exists",
+        "Added a taunt button as the nice-to-have, implemented as a toast message so it doesn't interfere with core lock/unlock controls",
+        "State persists via save/load to storage every 5s and after actions so lock states and usage survive a reload"
+      ],
+      "open_questions": [
+        "Whether real iPad/MDM integration is needed eventually versus keeping this a simulated demo",
+        "Whether per-student usage limits or a historical usage log should be added"
+      ],
+      "reason": "task-complete",
+      "file": "001-2026-09-02-ipad-control-console.md"
+    },
+    {
+      "id": "002",
+      "date": "2026-09-02",
+      "topic": "password-lock-unlock",
+      "files_touched": [
+        "script.js",
+        "style.css"
+      ],
+      "decisions": [
+        "Used an on-page modal instead of prompt() for password entry since prompt() is disabled in the sandbox",
+        "Reused the same login password (grove2026) to gate all lock/unlock actions including Lock All/Unlock All"
+      ],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "002-2026-09-02-password-lock-unlock.md"
+    }
+  ],
+  "last_summary_ts": 1788338982.0944114
 }

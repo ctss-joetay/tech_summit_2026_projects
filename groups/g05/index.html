@@ -3,14 +3,78 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>My Project</title>
+  <title>Grove Console — iPad Control</title>
   <link rel="stylesheet" href="style.css">
+  <!-- Google font: rounded, friendly, organic feel -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <main>
-    <h1>Hello, Tech Summit!</h1>
-    <p>Edit this page in the IDE, or ask the AI to build something.</p>
-  </main>
+
+  <!-- ===== LOGIN SCREEN ===== -->
+  <section id="login-screen" class="screen">
+    <div class="login-card">
+      <div class="leaf-badge">🌿</div>
+      <h1>Grove Console</h1>
+      <p class="subtitle">Teacher access only</p>
+      <form id="login-form">
+        <input
+          type="password"
+          id="password-input"
+          placeholder="Enter password"
+          autocomplete="off"
+          required
+        >
+        <button type="submit" class="btn primary">Enter the Grove</button>
+      </form>
+      <p id="login-error" class="error-msg" hidden>Wrong password — try again.</p>
+      <p class="hint">Hint for demo: the password is <code>grove2026</code></p>
+    </div>
+  </section>
+
+  <!-- ===== DASHBOARD (hidden until login) ===== -->
+  <section id="dashboard" class="screen" hidden>
+    <header class="topbar">
+      <div class="brand">🌿 Grove Console</div>
+      <div class="topbar-actions">
+        <button id="lock-all-btn" class="btn danger">🔒 Lock All iPads</button>
+        <button id="unlock-all-btn" class="btn ghost">🔓 Unlock All</button>
+        <button id="logout-btn" class="btn ghost">Log out</button>
+      </div>
+    </header>
+
+    <main class="grid" id="student-grid">
+      <!-- Student cards are rendered here by script.js -->
+    </main>
+  </section>
+
+  <!-- Toast for taunt messages -->
+  <div id="toast" class="toast" hidden></div>
+
+  <!-- Password confirmation modal, shown before any lock/unlock action -->
+  <div id="password-modal" class="modal-overlay" hidden>
+    <div class="modal-card">
+      <h2>Confirm Password</h2>
+      <p id="password-modal-message" class="subtitle">Enter the teacher password to continue.</p>
+      <form id="password-modal-form">
+        <input
+          type="password"
+          id="password-modal-input"
+          placeholder="Password"
+          autocomplete="off"
+          required
+        >
+        <p id="password-modal-error" class="error-msg" hidden>Wrong password — try again.</p>
+        <div class="modal-actions">
+          <button type="submit" class="btn primary">Confirm</button>
+          <button type="button" id="password-modal-cancel" class="btn ghost">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- GSAP: used for smooth entrance/lock animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="_summit/runtime.js"></script>
   <script src="script.js"></script>
 </body>
