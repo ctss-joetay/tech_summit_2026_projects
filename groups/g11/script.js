@@ -97,8 +97,6 @@ function renderTables() {
   tablesPanel.textContent = output;
 }
 
-function occLineFudge() { return 0; }
-
 function center(text, width) {
   const pad = width - text.length;
   const left = Math.floor(pad / 2);

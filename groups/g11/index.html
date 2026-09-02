@@ -11,50 +11,54 @@
 </head>
 <body>
   <main class="console">
-    <header class="titlebar">
-      <span class="titletext">canteen_ops@summit:~$ monitor --live</span>
-    </header>
-
-    <section class="stats">
-      <div class="stat">
-        <span class="label">OCCUPANCY</span>
-        <span class="value" id="stat-occupancy">0 / 0</span>
-      </div>
-      <div class="stat">
-        <span class="label">LOAD</span>
-        <span class="value" id="stat-load">0%</span>
-      </div>
-      <div class="stat">
-        <span class="label">AVG WAIT (EAT TIME)</span>
-        <span class="value" id="stat-wait">0.0s</span>
-      </div>
-      <div class="stat">
-        <span class="label">SERVED TOTAL</span>
-        <span class="value" id="stat-served">0</span>
-      </div>
-      <div class="stat status-stat">
-        <span class="label">STATUS</span>
-        <span class="value" id="stat-status">NOMINAL</span>
+    <section class="cli-box">
+      <header class="titlebar">
+        <span class="titletext">canteen_ops@summit:~$ monitor --live</span>
+        <span class="rate-readout" id="rate-readout">RATE: NORMAL</span>
+      </header>
+      <div class="cli-input-row">
+        <span class="cli-prefix">&gt;</span>
+        <input type="text" id="cli-input" class="cli-input" placeholder="type 'help' for commands" autocomplete="off">
+        <span class="blink">_</span>
       </div>
     </section>
 
-    <section class="control-row">
-      <label>MAX OCCUPANCY: <span id="capacity-readout">40</span></label>
-      <div class="block-bar" id="block-bar" aria-hidden="true"></div>
-    </section>
+    <section class="readout-box">
+      <section class="stats">
+        <div class="stat">
+          <span class="label">OCCUPANCY</span>
+          <span class="value" id="stat-occupancy">0 / 0</span>
+        </div>
+        <div class="stat">
+          <span class="label">LOAD</span>
+          <span class="value" id="stat-load">0%</span>
+        </div>
+        <div class="stat">
+          <span class="label">AVG WAIT (EAT TIME)</span>
+          <span class="value" id="stat-wait">0.0s</span>
+        </div>
+        <div class="stat">
+          <span class="label">SERVED TOTAL</span>
+          <span class="value" id="stat-served">0</span>
+        </div>
+        <div class="stat status-stat">
+          <span class="label">STATUS</span>
+          <span class="value" id="stat-status">NOMINAL</span>
+        </div>
+      </section>
 
-    <section class="split">
-      <div class="log-window" id="log-window" aria-live="polite">
-        <div class="log-line boot">canteen_ops v1.0 initialized...</div>
-      </div>
-      <pre class="tables-panel" id="tables-panel" aria-hidden="true"></pre>
-    </section>
+      <section class="control-row">
+        <label>MAX OCCUPANCY: <span id="capacity-readout">40</span></label>
+        <div class="block-bar" id="block-bar" aria-hidden="true"></div>
+      </section>
 
-    <div class="cli-input-row">
-      <span class="cli-prefix">&gt;</span>
-      <input type="text" id="cli-input" class="cli-input" placeholder="type 'help' for commands" autocomplete="off">
-      <span class="blink">_</span>
-    </div>
+      <section class="split">
+        <div class="log-window" id="log-window" aria-live="polite">
+          <div class="log-line boot">canteen_ops v1.0 initialized...</div>
+        </div>
+        <pre class="tables-panel" id="tables-panel" aria-hidden="true"></pre>
+      </section>
+    </section>
   </main>
 
   <script src="_summit/runtime.js"></script>

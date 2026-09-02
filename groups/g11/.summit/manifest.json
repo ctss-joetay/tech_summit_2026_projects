@@ -20,7 +20,30 @@
       ],
       "reason": "task-complete",
       "file": "001-2026-09-02-canteen-ops-console.md"
+    },
+    {
+      "id": "002",
+      "date": "2026-09-02",
+      "topic": "cli-table-occupancy",
+      "files_touched": [
+        "script.js",
+        "index.html"
+      ],
+      "decisions": [
+        "Removed macOS-style title bar dots per user request",
+        "Replaced slider UI with a CLI-style text input for commands",
+        "Used solid Unicode block characters (\u2588/\u2591) to visually represent occupancy instead of a progress bar or numeric-only display",
+        "Split the log panel into two side-by-side sections: event feed and table map",
+        "Each table rendered as a Unicode box that updates fill level in real time",
+        "Added CLI commands: help, clear, set-capacity, set-table"
+      ],
+      "open_questions": [
+        "Exact behavior/scope of 'clear output' function not fully specified by user",
+        "How tables should be arranged/laid out in real time was left vague ('idk arrange tables in rel time')"
+      ],
+      "reason": "publish",
+      "file": "002-2026-09-02-cli-table-occupancy.md"
     }
   ],
-  "last_summary_ts": 1788339960.5098379
+  "last_summary_ts": 1788340409.5879085
 }
