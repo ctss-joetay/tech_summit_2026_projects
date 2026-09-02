@@ -8,12 +8,10 @@
 
 // List of CCA courses students can rate. Add/remove freely.
 const COURSES = [
-  "AI Workshop",
-  "Robotics",
-  "Dance",
-  "Art & Craft",
-  "Sports",
-  "Music",
+  "Apple Media",
+  "Video Journalism",
+  "Figma",
+  "AI course",
 ];
 
 // Keys used in the shared Summit store.
@@ -142,6 +140,23 @@ document.getElementById("submit-rating").addEventListener("click", async () => {
 });
 
 // -------------------- student: general feedback --------------------
+
+// The textarea's example text should match whichever type is selected.
+const FEEDBACK_PLACEHOLDERS = {
+  suggestion: "Type here…e.g, We should have a photography course.",
+  complaint: "Type here…e.g, The venue is too small.",
+};
+
+function updateFeedbackPlaceholder() {
+  const checked = document.querySelector('input[name="fbtype"]:checked');
+  const textEl = document.getElementById("feedback-text");
+  if (!checked || !textEl) return;
+  textEl.placeholder = FEEDBACK_PLACEHOLDERS[checked.value] || "Type here…";
+}
+
+document.querySelectorAll('input[name="fbtype"]').forEach((radio) => {
+  radio.addEventListener("change", updateFeedbackPlaceholder);
+});
 
 document.getElementById("submit-feedback").addEventListener("click", async () => {
   const textEl = document.getElementById("feedback-text");

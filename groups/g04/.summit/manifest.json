@@ -18,7 +18,38 @@
       "open_questions": [],
       "reason": "task-complete",
       "file": "001-2026-09-02-cca-feedback-app.md"
+    },
+    {
+      "id": "002",
+      "date": "2026-09-02",
+      "topic": "rate-a-course-options",
+      "files_touched": [
+        "script.js",
+        "index.html"
+      ],
+      "decisions": [
+        "Course dropdown options set to Apple Media, Video Journalism, Figma, and AI course",
+        "Suggestion box placeholder text set to 'Type here\u2026e.g, We should have a photography course.'"
+      ],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "002-2026-09-02-rate-a-course-options.md"
+    },
+    {
+      "id": "003",
+      "date": "2026-09-02",
+      "topic": "complaint-placeholder-example",
+      "files_touched": [
+        "script.js",
+        "index.html"
+      ],
+      "decisions": [
+        "Textarea placeholder text changes dynamically based on Suggestion/Complaint selection instead of static text"
+      ],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "003-2026-09-02-complaint-placeholder-example.md"
     }
   ],
-  "last_summary_ts": 1788339439.9846833
+  "last_summary_ts": 1788339950.1255333
 }
