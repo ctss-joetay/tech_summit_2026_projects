@@ -169,7 +169,27 @@
       "open_questions": [],
       "reason": "task-complete",
       "file": "011-2026-09-01-note-icon-indicator.md"
+    },
+    {
+      "id": "012",
+      "date": "2026-09-02",
+      "topic": "leaf-wallpaper-background",
+      "files_touched": [
+        "style.css"
+      ],
+      "decisions": [
+        "Rejected real SQLite database since app is client-side only; suggested code-based namespaced storage via Summit.save/load instead, noting it's not real per-user security",
+        "Rejected real AI API integration due to exposed API key risk in client-side script.js; recommended rule-based fake-AI features (keyword-based priority detection, canned coaching messages) as safer alternative",
+        "Clarified that using an open-source model's API key has the same exposure risk as any other key since it's about where the key lives, not which model it calls"
+      ],
+      "open_questions": [
+        "Whether to eventually implement a personal-code task list feature",
+        "Whether to pursue a free-tier real AI API call with exposed demo key vs sticking with rule-based fake-AI features",
+        "Whether the leaf wallpaper opacity/size needs tweaking"
+      ],
+      "reason": "task-complete",
+      "file": "012-2026-09-02-leaf-wallpaper-background.md"
     }
   ],
-  "last_summary_ts": 1788254953.1125417
+  "last_summary_ts": 1788326530.1300066
 }
