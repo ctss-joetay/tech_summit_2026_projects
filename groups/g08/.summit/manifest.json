@@ -36,7 +36,25 @@
       "open_questions": [],
       "reason": "task-complete",
       "file": "002-2026-09-02-collected-button-reload.md"
+    },
+    {
+      "id": "003",
+      "date": "2026-09-02",
+      "topic": "orders-dashboard-page",
+      "files_touched": [
+        "orders.html",
+        "index.html",
+        "script.js",
+        "style.css"
+      ],
+      "decisions": [
+        "Orders are now tracked in a running list/array in storage (not just saved individually) so a dashboard can total them",
+        "Added a separate dashboard page (orders.html) rather than embedding totals into the existing upload page, reusing the same style.css"
+      ],
+      "open_questions": [],
+      "reason": "publish",
+      "file": "003-2026-09-02-orders-dashboard-page.md"
     }
   ],
-  "last_summary_ts": 1788339846.5439
+  "last_summary_ts": 1788340095.6133537
 }
