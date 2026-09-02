@@ -3,14 +3,88 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>My Project</title>
+  <title>CCA Feedback</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <main>
-    <h1>Hello, Tech Summit!</h1>
-    <p>Edit this page in the IDE, or ask the AI to build something.</p>
-  </main>
+
+  <!-- ===== SCREEN 1: choose role & "sign in" ===== -->
+  <section id="screen-login" class="screen active">
+    <div class="card login-card">
+      <h1>🎨 CCA Feedback</h1>
+      <p class="subtitle">Tell us what you really think about your CCA!</p>
+
+      <label class="field-label" for="name-input">Your name (MOE account)</label>
+      <input id="name-input" type="text" placeholder="e.g. Jamie Tan" autocomplete="off">
+
+      <p class="field-label">I am a...</p>
+      <div class="role-buttons">
+        <button id="btn-student" class="role-btn">🧑‍🎓 Student</button>
+        <button id="btn-teacher" class="role-btn">🧑‍🏫 Teacher</button>
+      </div>
+      <p id="login-error" class="error-text"></p>
+    </div>
+  </section>
+
+  <!-- ===== SCREEN 2: student view ===== -->
+  <section id="screen-student" class="screen">
+    <div class="topbar">
+      <span id="student-welcome" class="welcome-text"></span>
+      <button id="student-logout" class="link-btn">Sign out</button>
+    </div>
+
+    <div class="card">
+      <h2>⭐ Rate a course</h2>
+      <label class="field-label" for="course-select">Choose a course</label>
+      <select id="course-select"></select>
+
+      <div class="stars" id="star-picker">
+        <!-- 5 star buttons filled in by JS -->
+      </div>
+      <button id="submit-rating" class="primary-btn">Submit rating</button>
+      <p id="rating-msg" class="success-text"></p>
+    </div>
+
+    <div class="card">
+      <h2>💬 General feedback</h2>
+      <p class="field-label">Got a suggestion or a complaint? Let us know.</p>
+      <div class="feedback-type">
+        <label><input type="radio" name="fbtype" value="suggestion" checked> 💡 Suggestion</label>
+        <label><input type="radio" name="fbtype" value="complaint"> ⚠️ Complaint</label>
+      </div>
+      <textarea id="feedback-text" rows="4" placeholder="Type here... e.g. 'The hall is too small for dance practice.'"></textarea>
+      <button id="submit-feedback" class="primary-btn">Send feedback</button>
+      <p id="feedback-msg" class="success-text"></p>
+    </div>
+  </section>
+
+  <!-- ===== SCREEN 3: teacher view ===== -->
+  <section id="screen-teacher" class="screen">
+    <div class="topbar">
+      <span id="teacher-welcome" class="welcome-text"></span>
+      <button id="teacher-logout" class="link-btn">Sign out</button>
+    </div>
+
+    <div class="card">
+      <h2>📊 Course ratings</h2>
+      <div id="ratings-summary"></div>
+    </div>
+
+    <div class="card">
+      <h2>🧠 Auto-generated summary</h2>
+      <p class="hint-text">A quick keyword scan of what students are saying most.</p>
+      <p id="ai-summary" class="ai-summary"></p>
+    </div>
+
+    <div class="card">
+      <h2>📋 All feedback</h2>
+      <div id="feedback-list"></div>
+    </div>
+  </section>
+
+  <script src="_summit/runtime.js"></script>
+  <!-- Anime.js: small animation library, used for star pop and screen transitions -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
