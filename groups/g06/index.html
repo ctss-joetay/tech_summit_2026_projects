@@ -3,51 +3,127 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Digimon Roam</title>
+    <title>Bag n' Books Organiser</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <header>
-      <h1>📟 Digimon Roam</h1>
-      <p class="tagline">Take steps to find Digimon!</p>
-    </header>
+    <!-- STEP 1: Start screen. Title animates in big, then fades to reveal the app. -->
+    <div id="start-screen">
+      <h1 id="start-title">Bag n' Books<br />Organiser</h1>
+      <p id="start-hint">tap anywhere to begin</p>
+    </div>
 
-    <main>
-      <section id="progress" class="card">
-        <h2>Steps to next encounter</h2>
-        <div class="bar-outer">
-          <div id="distance-bar" class="bar-inner"></div>
+    <!-- Main app, hidden until the start screen is dismissed -->
+    <div id="app" class="hidden">
+      <header class="app-header">
+        <h1>Bag n' Books Organiser</h1>
+        <nav class="tab-nav">
+          <button class="tab-btn active" data-tab="weeks" data-i18n="tabWeeks">📅 Weeks</button>
+          <button class="tab-btn" data-tab="pack" data-i18n="tabPack">🎒 Pack Today</button>
+          <button class="tab-btn" data-tab="settings" data-i18n="tabSettings">⚙️ Settings</button>
+        </nav>
+      </header>
+
+      <!-- Simple onboarding tutorial, shown once on first visit -->
+      <div id="tutorial-overlay" class="hidden">
+        <div class="tutorial-card">
+          <p id="tutorial-text"></p>
+          <button id="tutorial-next">Next</button>
         </div>
-        <p><span id="distance-value">35</span> steps remaining</p>
-        <p>Last step power: <span id="shake-meter">0</span></p>
-        <button id="simulate-shake">Take a step</button>
-        <p>Total steps taken: <span id="total-steps">0</span></p>
-      </section>
+      </div>
 
-      <section id="encounter" class="card hidden">
-        <h2>A wild Digimon appeared!</h2>
-        <div id="critter-display">
-          <span id="critter-emoji">❓</span>
-          <p id="critter-name"></p>
+      <!-- WEEKS TAB -->
+      <section id="tab-weeks" class="tab-panel active">
+        <p class="section-intro">
+          Build a timetable for each week. Switch on the week you're
+          following right now — only one can be active at a time.
+        </p>
+
+        <h2>Your Weeks</h2>
+        <div id="week-list"></div>
+        <button id="add-week-btn" class="btn-secondary">+ Add Week</button>
+
+        <div id="week-settings" class="hidden card">
+          <h3 id="week-settings-title">Week settings</h3>
+          <p class="section-intro small">
+            Tick which subjects happen on each day for this week.
+          </p>
+          <div id="week-grid"></div>
         </div>
-        <button id="catch-btn">Throw a Digivice signal!</button>
-        <p id="catch-result" class="status-text"></p>
+
+        <h2>Subjects Catalog</h2>
+        <p class="section-intro small">
+          Every subject has a list of things to bring. Add new subjects here.
+        </p>
+        <div id="subject-catalog"></div>
+        <form id="add-subject-form" class="inline-form">
+          <input id="subject-name" type="text" placeholder="Subject name" required />
+          <input id="subject-items" type="text" placeholder="Items, comma separated (e.g. textbook, goggles)" required />
+          <button type="submit" class="btn-secondary">+ Add Subject</button>
+        </form>
       </section>
 
-      <section id="collection" class="card">
-        <h2>Your partners</h2>
-        <div id="collection-grid"></div>
-        <p id="collection-empty">No Digimon caught yet — start walking!</p>
+      <!-- PACK TODAY TAB -->
+      <section id="tab-pack" class="tab-panel hidden">
+        <p class="section-intro" id="pack-active-week-label"></p>
+        <h2>Pick a day</h2>
+        <div id="day-buttons"></div>
+        <div id="pack-result" class="card hidden"></div>
       </section>
 
-      <section id="digidex" class="card">
-        <h2>Digidex (reference book)</h2>
-        <p class="status-text">Discovered Digimon show their name and info. Undiscovered ones stay a mystery.</p>
-        <div id="digidex-grid"></div>
+      <!-- SETTINGS TAB -->
+      <section id="tab-settings" class="tab-panel hidden">
+        <h2 data-i18n="settingsHeading">Settings</h2>
+
+        <div class="card">
+          <div class="setting-row">
+            <span data-i18n="darkModeLabel">Dark mode</span>
+            <label class="switch">
+              <input type="checkbox" id="dark-mode-toggle" />
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="setting-row">
+            <span data-i18n="languageLabel">Language</span>
+            <select id="language-select">
+              <option value="en">English</option>
+              <option value="zh">简体中文</option>
+              <option value="ms">Bahasa Melayu</option>
+              <option value="ta">தமிழ்</option>
+            </select>
+          </div>
+
+          <div class="setting-row setting-row-stack">
+            <span data-i18n="fadeLabel">Faded text transparency</span>
+            <input type="range" id="fade-slider" min="0" max="100" step="5" />
+            <span id="fade-value"></span>
+          </div>
+        </div>
+
+        <div class="card">
+          <button id="retry-tutorial-btn" class="btn-secondary" data-i18n="retryTutorialBtn">
+            ▶ Replay tutorial
+          </button>
+        </div>
+
+        <div class="card">
+          <button id="reset-all-btn" class="btn-secondary btn-danger" data-i18n="resetBtn">
+            🗑 Reset everything
+          </button>
+          <div id="reset-confirm" class="hidden">
+            <p data-i18n="resetConfirmText">
+              This deletes all your weeks, subjects and settings for good. Are you sure?
+            </p>
+            <button id="reset-confirm-yes" class="btn-secondary btn-danger" data-i18n="resetConfirmYes">Yes, reset</button>
+            <button id="reset-confirm-no" class="btn-secondary" data-i18n="resetConfirmNo">Cancel</button>
+          </div>
+        </div>
       </section>
-    </main>
+    </div>
 
     <script src="_summit/runtime.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
     <script src="script.js"></script>
   </body>
 </html>

@@ -3,86 +3,26 @@
   "contexts": [
     {
       "id": "001",
-      "date": "2026-08-26",
-      "topic": "wikipedia-search-and-stock-simulator",
+      "date": "2026-09-02",
+      "topic": "bag-n-books-organiser",
       "files_touched": [
         "index.html",
+        "style.css",
         "script.js"
       ],
       "decisions": [
-        "Built a Wikipedia search tool using Wikipedia's public search API instead of a from-scratch AI model, since true from-scratch NLP is infeasible in-browser",
-        "Refused to build a real stock-predicting AI; built a transparent simulated stock trend tool with moving averages and a clear educational-only disclaimer instead",
-        "Used client-side simulation with 5-second price updates and saved watchlist via Summit.save"
-      ],
-      "open_questions": [],
-      "reason": "task-complete",
-      "file": "001-2026-08-26-wikipedia-search-and-stock-simulator.md"
-    },
-    {
-      "id": "002",
-      "date": "2026-08-26",
-      "topic": "meme-scanner-app",
-      "files_touched": [
-        "script.js",
-        "index.html"
-      ],
-      "decisions": [
-        "Use meme-api.com (free, no key) to fetch real Reddit memes instead of simulated content",
-        "Support category selection (memes, dankmemes, wholesomememes, ProgrammerHumor, funny)",
-        "Store favorites via Summit.save so they persist across reloads"
+        "Skipped the chatbot 'nice to have' feature for now to avoid complicating the must-have requirements",
+        "Only one week can be toggled active at a time; turning one on forces others off",
+        "Deleting a subject from the catalog also removes it from any week/day referencing it to avoid dangling data",
+        "Data persisted via Summit.save/load as a single object covering subjects, weeks, and tutorial-seen flag"
       ],
       "open_questions": [
-        "How to handle inappropriate/unmoderated content beyond a warning note"
+        "Whether to add the chatbot settings-editor feature next",
+        "Whether the tutorial overlay needs a way to be replayed manually"
       ],
       "reason": "task-complete",
-      "file": "002-2026-08-26-meme-scanner-app.md"
-    },
-    {
-      "id": "003",
-      "date": "2026-08-26",
-      "topic": "favorites-genre-filter",
-      "files_touched": [],
-      "decisions": [
-        "Interpreted 'genre filter' as filtering saved favorites by subreddit rather than adding a new scanning category"
-      ],
-      "open_questions": [],
-      "reason": "task-complete",
-      "file": "003-2026-08-26-favorites-genre-filter.md"
-    },
-    {
-      "id": "004",
-      "date": "2026-08-26",
-      "topic": "pokemon-go-reskin-motion",
-      "files_touched": [
-        "script.js",
-        "index.html"
-      ],
-      "decisions": [
-        "Simulate walking distance via phone accelerometer/devicemotion shake intensity instead of GPS, since GPS isn't available in sandbox",
-        "Include a manual 'simulate shake' button for desktop testing",
-        "Use a walking progress bar that spawns rarity-tiered critters, caught via chance-based catch button",
-        "Persist caught critters using Summit.save"
-      ],
-      "open_questions": [],
-      "reason": "task-complete",
-      "file": "004-2026-08-26-pokemon-go-reskin-motion.md"
-    },
-    {
-      "id": "005",
-      "date": "2026-08-26",
-      "topic": "digimon-theme-digidex",
-      "files_touched": [
-        "script.js",
-        "index.html"
-      ],
-      "decisions": [
-        "Encounter stage (Rookie/Champion/Ultimate/Mega) affects catch difficulty",
-        "Digidex entries show '???' until a Digimon is caught, then reveal name/stage/description"
-      ],
-      "open_questions": [],
-      "reason": "task-complete",
-      "file": "005-2026-08-26-digimon-theme-digidex.md"
+      "file": "001-2026-09-02-bag-n-books-organiser.md"
     }
   ],
-  "last_summary_ts": 1787731770.4478557
+  "last_summary_ts": 1788339481.9669049
 }

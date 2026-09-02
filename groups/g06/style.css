@@ -1,167 +1,369 @@
+/* ---------- Theme variables: change these two to restyle everything ---------- */
 :root {
-  --accent: #ff8c1a;
-  --accent-dark: #cc6e00;
-  --bg: #eef3fb;
-  --card-bg: #ffffff;
-  --text: #1f2d3d;
+  --paper: #faf7f0;
+  --paper-line: #e3ddcd;
+  --ink: #2b2620;
+  --ink-soft: #5c5648;
+  --accent: #8a3324;      /* pen-red accent, like a teacher's marking pen */
+  --accent-soft: #d8b9a8;
+  --on-color: #3f6b3a;    /* green for "on" switches */
+  --radius: 10px;
+  --shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  --fade-alpha: 0.6;      /* how visible faded/soft text is; slider controls this */
 }
 
-* {
-  box-sizing: border-box;
+/* ---------- Dark mode ---------- */
+body.dark {
+  --paper: #1e1c18;
+  --paper-line: #322e26;
+  --ink: #f0ece2;
+  --ink-soft: #b8b0a0;
+  --accent: #e08a6f;
+  --accent-soft: #4a3128;
+  --on-color: #6fae66;
 }
+body.dark .card { background: #2a2722; border-color: var(--paper-line); }
+body.dark .day-btn,
+body.dark .tab-btn { background: transparent; }
+
+/* the "faded" text style, opacity controlled by the settings slider */
+.section-intro,
+.section-intro.small {
+  color: var(--ink-soft);
+  opacity: var(--fade-alpha);
+}
+
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
-  font-family: system-ui, "Segoe UI", Roboto, sans-serif;
-  background: var(--bg);
-  color: var(--text);
+  font-family: "Georgia", "Times New Roman", serif;
+  background: var(--paper);
+  color: var(--ink);
+  min-height: 100vh;
+  /* faint ruled-paper lines for the "paper and print" feel */
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent,
+    transparent 38px,
+    var(--paper-line) 39px
+  );
 }
 
-header {
-  background: #1e5fbf;
-  color: white;
-  padding: 1.5rem 1rem;
+.hidden { display: none !important; }
+
+/* ---------- Start screen ---------- */
+#start-screen {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: var(--paper);
+  z-index: 100;
+  cursor: pointer;
   text-align: center;
 }
-
-header h1 {
-  margin: 0 0 0.25rem 0;
+#start-title {
+  font-size: clamp(2.5rem, 8vw, 5rem);
+  letter-spacing: 0.02em;
+  opacity: 0;
+}
+#start-hint {
+  margin-top: 1rem;
+  color: var(--ink-soft);
+  font-style: italic;
+  opacity: 0;
 }
 
-.tagline {
-  margin: 0;
-  opacity: 0.9;
-}
-
-main {
-  max-width: 520px;
+/* ---------- App shell ---------- */
+#app {
+  max-width: 760px;
   margin: 0 auto;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  padding: 1.5rem 1.25rem 4rem;
 }
+.app-header h1 {
+  font-size: 1.8rem;
+  border-bottom: 3px solid var(--ink);
+  padding-bottom: 0.5rem;
+}
+.tab-nav {
+  display: flex;
+  gap: 0.5rem;
+  margin: 1rem 0 1.5rem;
+}
+.tab-btn {
+  font: inherit;
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--ink);
+  background: transparent;
+  color: var(--ink);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+.tab-btn.active {
+  background: var(--ink);
+  color: var(--paper);
+}
+.tab-panel { animation: fadeIn 0.25s ease; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+h2 { margin-top: 2rem; font-size: 1.2rem; }
+.section-intro { color: var(--ink-soft); line-height: 1.4; }
+.section-intro.small { font-size: 0.9rem; margin-top: -0.5rem; }
 
 .card {
-  background: var(--card-bg);
-  border-radius: 12px;
-  padding: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  background: #fff;
+  border: 1px solid var(--paper-line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1rem 1.25rem;
+  margin-top: 1rem;
 }
 
-button {
-  background: var(--accent);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 0.6rem 1rem;
-  font-size: 1rem;
+/* ---------- Buttons ---------- */
+.btn-secondary {
+  font: inherit;
+  padding: 0.5rem 1rem;
+  border: 2px dashed var(--accent);
+  background: transparent;
+  color: var(--accent);
+  border-radius: var(--radius);
   cursor: pointer;
-  margin: 0.25rem 0.25rem 0.25rem 0;
-}
-
-button:hover {
-  background: var(--accent-dark);
-}
-
-button:disabled {
-  background: #aaa;
-  cursor: not-allowed;
-}
-
-.status-text {
-  font-size: 0.9rem;
-  color: #555;
-}
-
-.bar-outer {
-  width: 100%;
-  height: 20px;
-  background: #e0e0e0;
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-.bar-inner {
-  height: 100%;
-  width: 0%;
-  background: #1e5fbf;
-  transition: width 0.2s ease;
-}
-
-.hidden {
-  display: none;
-}
-
-#critter-display {
-  text-align: center;
-}
-
-#critter-emoji {
-  font-size: 4rem;
-  display: block;
-}
-
-#collection-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-  gap: 0.5rem;
-  text-align: center;
-}
-
-.collection-item {
-  background: var(--bg);
-  border-radius: 8px;
-  padding: 0.5rem;
-  font-size: 1.8rem;
-}
-
-.collection-item span {
-  display: block;
-  font-size: 0.7rem;
-  margin-top: 0.25rem;
-  color: #444;
-}
-
-#digidex-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 0.75rem;
   margin-top: 0.75rem;
 }
+.btn-secondary:hover { background: var(--accent-soft); }
 
-.digidex-entry {
-  background: var(--bg);
-  border-radius: 10px;
-  padding: 0.75rem;
+/* ---------- Week list ---------- */
+.week-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid var(--paper-line);
+  border-radius: var(--radius);
+  background: #fff;
+  margin-top: 0.6rem;
+}
+.week-row .week-name {
+  font-size: 1.05rem;
+  cursor: pointer;
+  flex: 1;
+}
+.week-row.selected { border-color: var(--accent); }
+
+/* Toggle switch, built from a checkbox */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+}
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+  position: absolute;
+  inset: 0;
+  background: #ccc;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.slider::before {
+  content: "";
+  position: absolute;
+  height: 18px; width: 18px;
+  left: 3px; top: 3px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.15s;
+}
+.switch input:checked + .slider { background: var(--on-color); }
+.switch input:checked + .slider::before { transform: translateX(20px); }
+
+.week-delete,
+.week-rename {
+  background: none;
+  border: none;
+  color: var(--ink-soft);
+  cursor: pointer;
+  font-size: 1.1rem;
+}
+.week-delete:hover,
+.week-rename:hover { color: var(--accent); }
+.week-rename-input {
+  flex: 1;
+  font: inherit;
+  padding: 0.2rem 0.5rem;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--paper);
+  color: var(--ink);
+}
+
+/* ---------- Week settings grid ---------- */
+#week-grid {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  row-gap: 0.5rem;
+  column-gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+.day-label { font-weight: bold; align-self: center; }
+.subject-checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.8rem;
+}
+.subject-checks label {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.92rem;
+  cursor: pointer;
+}
+
+/* ---------- Subject catalog ---------- */
+.subject-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #fff;
+  border: 1px solid var(--paper-line);
+  border-radius: 999px;
+  padding: 0.3rem 0.8rem;
+  margin: 0.25rem 0.4rem 0.25rem 0;
+  font-size: 0.9rem;
+}
+.subject-chip button {
+  border: none;
+  background: none;
+  color: var(--accent);
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.inline-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+.inline-form input {
+  font: inherit;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--paper-line);
+  border-radius: var(--radius);
+  flex: 1;
+  min-width: 160px;
+}
+
+/* ---------- Pack Today tab ---------- */
+#day-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+.day-btn {
+  font: inherit;
+  padding: 0.6rem 1rem;
+  border: 2px solid var(--ink);
+  border-radius: var(--radius);
+  background: #fff;
+  cursor: pointer;
+}
+.day-btn:hover { background: var(--accent-soft); }
+.day-btn.active { background: var(--ink); color: var(--paper); }
+
+#pack-result h3 { margin-top: 0; }
+#pack-result ul { padding-left: 1.2rem; }
+#pack-result li { margin: 0.3rem 0; }
+
+/* ---------- Settings ---------- */
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--paper-line);
+}
+.setting-row:last-child { border-bottom: none; }
+.setting-row-stack { flex-wrap: wrap; }
+.setting-row select {
+  font: inherit;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--paper-line);
+  border-radius: var(--radius);
+  background: var(--paper);
+  color: var(--ink);
+}
+#fade-slider { flex: 1; min-width: 120px; }
+
+.btn-danger {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+#reset-confirm {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px dashed var(--paper-line);
+}
+#reset-confirm p { color: var(--ink-soft); }
+
+/* ---------- Chat / Help bot ---------- */
+#chat-log {
+  min-height: 140px;
+  max-height: 320px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.chat-msg {
+  padding: 0.5rem 0.8rem;
+  border-radius: var(--radius);
+  max-width: 85%;
+  line-height: 1.4;
+}
+.chat-msg.user {
+  align-self: flex-end;
+  background: var(--accent-soft);
+}
+.chat-msg.bot {
+  align-self: flex-start;
+  background: var(--paper-line);
+}
+
+/* ---------- Tutorial overlay ---------- */
+#tutorial-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(43, 38, 32, 0.5);
+  display: grid;
+  place-items: center;
+  z-index: 50;
+}
+.tutorial-card {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  max-width: 380px;
   text-align: center;
-  border: 2px solid #1e5fbf33;
 }
-
-.digidex-entry.undiscovered {
-  opacity: 0.6;
-  border-color: #99999955;
-}
-
-.digidex-emoji {
-  font-size: 2.2rem;
-  display: block;
-}
-
-.digidex-name {
-  font-weight: bold;
-  margin: 0.3rem 0 0.1rem 0;
-}
-
-.digidex-stage {
-  font-size: 0.75rem;
-  color: var(--accent-dark);
-  margin: 0 0 0.3rem 0;
-  font-weight: 600;
-}
-
-.digidex-desc {
-  font-size: 0.75rem;
-  color: #555;
-  margin: 0;
+.tutorial-card p { line-height: 1.5; margin-bottom: 1rem; }
+.tutorial-card button {
+  font: inherit;
+  padding: 0.5rem 1.2rem;
+  border: none;
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: var(--radius);
+  cursor: pointer;
 }
