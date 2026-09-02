@@ -22,7 +22,30 @@
       ],
       "reason": "task-complete",
       "file": "001-2026-09-02-bag-n-books-organiser.md"
+    },
+    {
+      "id": "002",
+      "date": "2026-09-02",
+      "topic": "settings-panel-and-weeks",
+      "files_touched": [
+        "script.js",
+        "index.html",
+        "style.css"
+      ],
+      "decisions": [
+        "Fixed default subjects are Math, Science, Mother Tongue, and English",
+        "Added a settings panel with dark/light mode, faded-word contrast slider (0-40% transparency), language selector, reset-all, and replay tutorial",
+        "Removed the help chatbot feature after it was initially added, per request",
+        "Supported languages narrowed to English, Simplified Chinese, Malay, and Tamil",
+        "Root cause of settings not working was that setupSettings() (and applySettings()) were defined but never called in init(); fixed by wiring them into init()",
+        "Added ability to select and rename different weeks"
+      ],
+      "open_questions": [
+        "Whether the leaderboard should reset each round"
+      ],
+      "reason": "publish",
+      "file": "002-2026-09-02-settings-panel-and-weeks.md"
     }
   ],
-  "last_summary_ts": 1788339481.9669049
+  "last_summary_ts": 1788340456.5461352
 }
