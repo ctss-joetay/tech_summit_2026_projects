@@ -43,7 +43,17 @@
       ],
       "reason": "publish",
       "file": "002-2026-09-02-cli-table-occupancy.md"
+    },
+    {
+      "id": "003",
+      "date": "2026-09-02",
+      "topic": "session",
+      "files_touched": [],
+      "decisions": [],
+      "open_questions": [],
+      "reason": "publish",
+      "file": "003-2026-09-02-session.md"
     }
   ],
-  "last_summary_ts": 1788340409.5879085
+  "last_summary_ts": 1788340597.8223696
 }

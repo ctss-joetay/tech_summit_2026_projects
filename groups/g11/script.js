@@ -12,8 +12,24 @@ const statLoad = document.getElementById("stat-load");
 const statWait = document.getElementById("stat-wait");
 const statServed = document.getElementById("stat-served");
 const statStatus = document.getElementById("stat-status");
+const rateReadout = document.getElementById("rate-readout");
 
 const TABLE_COUNT = 8;
+
+const RATE_PRESETS = {
+  quiet: { label: "QUIET", min: 1500, max: 3000, cls: "" },
+  normal: { label: "NORMAL", min: 400, max: 900, cls: "" },
+  peak: { label: "PEAK", min: 80, max: 250, cls: "warn" },
+  rush: { label: "RUSH", min: 30, max: 100, cls: "danger" },
+};
+
+let currentRate = RATE_PRESETS.normal;
+
+function renderRateReadout() {
+  rateReadout.textContent = `RATE: ${currentRate.label}`;
+  rateReadout.classList.remove("warn", "danger");
+  if (currentRate.cls) rateReadout.classList.add(currentRate.cls);
+}
 
 let tables = Array.from({ length: TABLE_COUNT }, (_, i) => ({
   id: i + 1,
@@ -177,6 +193,7 @@ const HELP_TEXT = [
   "  set-capacity <#> <n>     set table <#>'s capacity to n (1-20)",
   "  occ <#> <n>              manually set table <#>'s occupancy to n",
   "  list                     print current state of all tables",
+  "  rate <quiet|normal|peak|rush>  set arrival flow rate",
   "  reset                    clear all tables and stats",
 ];
 
@@ -242,6 +259,19 @@ function runCommand(raw) {
     return;
   }
 
+  if (cmd === "rate") {
+    const key = (parts[1] || "").toLowerCase();
+    const preset = RATE_PRESETS[key];
+    if (!preset) {
+      logLine("usage: rate <quiet|normal|peak|rush>", "warn");
+      return;
+    }
+    currentRate = preset;
+    renderRateReadout();
+    logLine(`[${timestamp()}] arrival rate set to ${preset.label}`, "boot");
+    return;
+  }
+
   logLine(`unknown command: "${cmd}" — type 'help' for a list`, "warn");
 }
 
@@ -253,12 +283,13 @@ cliInput.addEventListener("keydown", (event) => {
 
 function scheduleArrivals() {
   tryArrival();
-  const nextIn = 400 + Math.random() * 900;
+  const nextIn = currentRate.min + Math.random() * (currentRate.max - currentRate.min);
   setTimeout(scheduleArrivals, nextIn);
 }
 
 setInterval(() => tick(1), 1000);
 scheduleArrivals();
+renderRateReadout();
 logLine("type 'help' for a list of commands", "boot");
 updateStats();
 
