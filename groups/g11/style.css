@@ -29,7 +29,10 @@ body {
   border-radius: 8px;
   box-shadow: 0 0 30px rgba(51, 255, 102, 0.08);
   overflow: hidden;
+  transition: background 0.3s ease, border-color 0.3s ease;
 }
+
+body { transition: background 0.3s ease; }
 
 .titlebar {
   background: #111a13;
