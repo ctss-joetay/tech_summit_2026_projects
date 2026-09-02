@@ -3,75 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Gene Survival Sim</title>
+  <title>My Project</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Gene Survival Simulation</h1>
-
-  <div id="app">
-    <section id="dashboard">
-      <h2>Dashboard</h2>
-
-      <label>
-        Number of people
-        <input type="number" id="numPeople" min="1" max="1000000" value="30">
-      </label>
-
-      <label>
-        Number of genes per person
-        <input type="number" id="numGenes" min="1" max="10" value="2">
-      </label>
-
-      <div id="geneEffects"></div>
-
-      <label>
-        Disease kill chance: <span id="diseaseVal">20</span>%
-        <input type="range" id="diseaseRate" min="0" max="100" value="20">
-      </label>
-
-      <label>
-        Reproduction chance (per fed pair): <span id="reproVal">40</span>%
-        <input type="range" id="reproRate" min="0" max="100" value="40">
-      </label>
-
-      <label>
-        Gene mutation chance: <span id="mutateVal">5</span>%
-        <input type="range" id="mutateRate" min="0" max="100" value="5">
-      </label>
-
-      <label>
-        New people per successful reproduction
-        <input type="number" id="offspringCount" min="1" max="10" value="3">
-      </label>
-
-      <label>
-        Food available each generation
-        <input type="number" id="foodAmount" min="0" max="2000000" value="25">
-      </label>
-
-      <label>
-        Number of houses (limits pairs that can reproduce)
-        <input type="number" id="numHouses" min="0" max="1000000" value="10">
-      </label>
-
-      <div id="controls">
-        <button id="playBtn">▶ Play</button>
-        <button id="stepBtn">Step once</button>
-        <button id="resetBtn">Reset</button>
-      </div>
-    </section>
-
-    <section id="results">
-      <h2>Simulation</h2>
-      <p id="genLabel">Generation: 0</p>
-      <p id="popLabel">Population: 0</p>
-      <canvas id="graph" width="500" height="180"></canvas>
-      <h3>Log</h3>
-      <div id="log"></div>
-    </section>
-  </div>
-
+  <main>
+    <h1>Hello, Tech Summit!</h1>
+    <p>Edit this page in the IDE, or ask the AI to build something.</p>
+  </main>
   <script src="_summit/runtime.js"></script>
   <script src="script.js"></script>
 </body>
