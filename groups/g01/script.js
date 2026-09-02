@@ -2,6 +2,7 @@
 
 const form = document.getElementById("task-form");
 const input = document.getElementById("task-input");
+const micBtn = document.getElementById("mic-btn");
 const priorityToggle = document.getElementById("priority-toggle");
 const taskList = document.getElementById("task-list");
 const completedList = document.getElementById("completed-list");
@@ -302,6 +303,57 @@ form.addEventListener("submit", (e) => {
   saveTasks();
   render();
 });
+
+// ---- Speech-to-text: dictate a task using the device microphone ----
+// Uses the browser's built-in Web Speech API (no server, no API key needed).
+// Not every browser supports it, so the mic button only appears if it does.
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+if (SpeechRecognition) {
+  micBtn.hidden = false;
+
+  const recognition = new SpeechRecognition();
+  recognition.lang = "en-US";
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+
+  let listening = false;
+
+  recognition.addEventListener("start", () => {
+    listening = true;
+    micBtn.classList.add("mic-listening");
+    micBtn.textContent = "🔴";
+    input.placeholder = "Listening...";
+  });
+
+  recognition.addEventListener("end", () => {
+    listening = false;
+    micBtn.classList.remove("mic-listening");
+    micBtn.textContent = "🎤";
+    input.placeholder = "What needs doing?";
+  });
+
+  recognition.addEventListener("result", (event) => {
+    const spoken = event.results[0][0].transcript.trim();
+    if (spoken) {
+      input.value = spoken;
+      input.focus();
+    }
+  });
+
+  recognition.addEventListener("error", (event) => {
+    input.placeholder = "Didn't catch that — try again?";
+    console.log("Speech recognition error:", event.error);
+  });
+
+  micBtn.addEventListener("click", () => {
+    if (listening) {
+      recognition.stop();
+    } else {
+      recognition.start();
+    }
+  });
+}
 
 setPriorityButton("medium");
 loadTasks();
