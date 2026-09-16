@@ -1,4 +1,64 @@
 {
   "gid": "g13",
-  "contexts": []
+  "contexts": [
+    {
+      "id": "001",
+      "date": "2026-09-15",
+      "topic": "webcam-hand-shape-game",
+      "files_touched": [
+        "index.html",
+        "script.js",
+        "style.css"
+      ],
+      "decisions": [
+        "Used MediaPipe Hands (CDN library) for hand tracking rather than building detection from scratch",
+        "Track index fingertip (landmark 8) as the single tracking point, requiring user to trace shape outline rather than fit whole hand shape",
+        "Shape completion is based on tracing 75% of sampled outline points with the fingertip, not filling the whole shape",
+        "Game uses a single 30-second overall timer rather than per-shape countdowns, with unlimited shapes attempted until time runs out"
+      ],
+      "open_questions": [
+        "Whether hit-radius/difficulty tuning is needed after real camera testing",
+        "Whether shape variety/order should be randomized differently or follow a fixed progression"
+      ],
+      "reason": "task-complete",
+      "file": "001-2026-09-15-webcam-hand-shape-game.md"
+    },
+    {
+      "id": "002",
+      "date": "2026-09-15",
+      "topic": "ordered-shape-tracing",
+      "files_touched": [
+        "script.js"
+      ],
+      "decisions": [
+        "Require 100% of outline points to be traced (COMPLETE_RATIO=1.0)",
+        "Enforce sequential/directional tracing (pick direction after 2nd touch, only allow forward progress within STEP_WINDOW=2) to prevent 'mopping' the shape with random back-and-forth swipes"
+      ],
+      "open_questions": [
+        "Whether STEP_WINDOW=2 is the right tolerance for fast real-hand tracing motion"
+      ],
+      "reason": "task-complete",
+      "file": "002-2026-09-15-ordered-shape-tracing.md"
+    },
+    {
+      "id": "003",
+      "date": "2026-09-16",
+      "topic": "leaderboard-with-opt-out",
+      "files_touched": [
+        "script.js",
+        "index.html"
+      ],
+      "decisions": [
+        "Used Summit.submitScore/Summit.leaderboard built-in storage for persistence",
+        "Added opt-out checkbox so players can skip being added to leaderboard",
+        "Leaderboard refreshes immediately after each submission and shows top 10"
+      ],
+      "open_questions": [
+        "Whether the leaderboard should reset each round"
+      ],
+      "reason": "task-complete",
+      "file": "003-2026-09-16-leaderboard-with-opt-out.md"
+    }
+  ],
+  "last_summary_ts": 1789547161.6625118
 }

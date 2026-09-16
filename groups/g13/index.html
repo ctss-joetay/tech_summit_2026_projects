@@ -3,14 +3,46 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>My Project</title>
+  <title>Hand Shape Game</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <main>
-    <h1>Hello, Tech Summit!</h1>
-    <p>Edit this page in the IDE, or ask the AI to build something.</p>
+    <h1>Trace the Shape!</h1>
+    <p class="hint">Point your hand at the camera and trace the white outline with your index fingertip.</p>
+
+    <div class="hud">
+      <div class="timer">⏱ <span id="timer">30</span>s</div>
+      <div class="score-wrap">
+        <span>Score: <span id="score">0</span></span>
+        <div id="confetti-layer"></div>
+      </div>
+    </div>
+
+    <p id="msg"></p>
+
+    <div class="stage">
+      <video id="video" playsinline autoplay muted></video>
+      <canvas id="overlay" width="640" height="480"></canvas>
+      <div id="startOverlay">
+        <button id="startBtn">Start Game</button>
+        <form id="scoreForm" class="hidden">
+          <input id="nameInput" type="text" maxlength="16" placeholder="Enter your name" autocomplete="off">
+          <label class="optout">
+            <input type="checkbox" id="optOut"> Don't add me to the leaderboard
+          </label>
+          <button type="submit">Submit</button>
+        </form>
+        <div id="leaderboard">
+          <h2>Leaderboard</h2>
+          <ol id="leaderboardList"></ol>
+        </div>
+      </div>
+    </div>
   </main>
+
+  <script src="_summit/runtime.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
   <script src="script.js"></script>
 </body>
 </html>
