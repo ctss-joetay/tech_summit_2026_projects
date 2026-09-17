@@ -208,7 +208,44 @@
       ],
       "reason": "task-complete",
       "file": "013-2026-09-02-speech-to-text-task-input.md"
+    },
+    {
+      "id": "014",
+      "date": "2026-09-15",
+      "topic": "camera-photo-notes",
+      "files_touched": [
+        "script.js",
+        "index.html"
+      ],
+      "decisions": [
+        "Use a file input with capture=environment to open the device camera directly instead of a gallery/upload picker",
+        "Compress and shrink photos via canvas to low-quality JPEG before saving because Summit.save caps records at 4KB, trading photo quality for persistence",
+        "Photos stored per-task alongside notes"
+      ],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "014-2026-09-15-camera-photo-notes.md"
+    },
+    {
+      "id": "015",
+      "date": "2026-09-17",
+      "topic": "ai-suggested-todo-steps",
+      "files_touched": [
+        "script.js",
+        "index.html"
+      ],
+      "decisions": [
+        "Rejected earlier idea of adding a real external AI API key directly in client-side JS since it would be publicly visible in page source; used platform's Summit.generate instead, which handles auth server-side",
+        "New tasks are added instantly and AI-generated numbered step suggestions are filled into notes asynchronously afterward, rather than blocking task creation on the AI call",
+        "AI suggestions only populate notes if the user hasn't already typed their own notes, to avoid overwriting user input",
+        "Blocked/safety-message responses from Summit.generate are shown verbatim in notes rather than reworded, and errors (e.g. AI not enabled) show as a placeholder hint instead of breaking task functionality"
+      ],
+      "open_questions": [
+        "Whether AI features are currently enabled for this project, since it requires a teacher to turn it on and behavior wasn't confirmed working yet"
+      ],
+      "reason": "task-complete",
+      "file": "015-2026-09-17-ai-suggested-todo-steps.md"
     }
   ],
-  "last_summary_ts": 1788331527.844337
+  "last_summary_ts": 1789612704.3463964
 }

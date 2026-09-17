@@ -54,6 +54,13 @@
     <button id="notes-back" type="button">&larr; Back</button>
     <h1 id="notes-heading">Task</h1>
     <textarea id="notes-text" placeholder="Jot down notes for this task..."></textarea>
+
+    <div class="photo-section">
+      <input type="file" accept="image/*" capture="environment" id="photo-input" hidden>
+      <button id="photo-btn" type="button" class="photo-btn">📷 Take photo</button>
+      <button id="photo-remove" type="button" class="photo-remove" hidden>Remove photo</button>
+      <div id="photo-preview" class="photo-preview"></div>
+    </div>
   </main>
 
   <script src="_summit/runtime.js"></script>

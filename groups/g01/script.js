@@ -207,6 +207,13 @@ function buildTaskRow(task) {
     span.appendChild(noteIcon);
   }
 
+  if (generatingIds.has(task.id)) {
+    const thinking = document.createElement("span");
+    thinking.className = "note-thinking";
+    thinking.textContent = "✨ thinking...";
+    span.appendChild(thinking);
+  }
+
   const removeBtn = document.createElement("button");
   removeBtn.className = "remove";
   removeBtn.textContent = "✕";
@@ -226,6 +233,7 @@ function openNotes(taskId) {
   openTaskId = taskId;
   notesHeading.textContent = task.text;
   notesText.value = task.notes || "";
+  renderPhotoPreview(task);
   mainView.hidden = true;
   notesView.hidden = false;
 }
@@ -237,6 +245,61 @@ function closeNotes() {
 }
 
 notesBackBtn.addEventListener("click", closeNotes);
+
+// ---- Photo proof/reminder: take a photo with the device camera ----
+// Uses a file input with capture="environment" so it opens the phone's own
+// camera app (no getUserMedia/live video needed for a single snapshot).
+// The photo is shrunk down before saving because Summit.save caps each
+// record at 4KB, and a full-size photo would blow well past that.
+const photoInput = document.getElementById("photo-input");
+const photoBtn = document.getElementById("photo-btn");
+const photoRemoveBtn = document.getElementById("photo-remove");
+const photoPreview = document.getElementById("photo-preview");
+
+photoBtn.addEventListener("click", () => photoInput.click());
+
+photoInput.addEventListener("change", (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const img = new Image();
+  img.onload = () => {
+    const maxDim = 240;
+    const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+    const canvas = document.createElement("canvas");
+    canvas.width = img.width * scale;
+    canvas.height = img.height * scale;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+    const dataUrl = canvas.toDataURL("image/jpeg", 0.5);
+    const task = tasks.find((t) => t.id === openTaskId);
+    if (!task) return;
+    task.photo = dataUrl;
+    saveTasks();
+    renderPhotoPreview(task);
+  };
+  img.src = URL.createObjectURL(file);
+  photoInput.value = ""; // allow retaking the same photo again
+});
+
+photoRemoveBtn.addEventListener("click", () => {
+  const task = tasks.find((t) => t.id === openTaskId);
+  if (!task) return;
+  task.photo = "";
+  saveTasks();
+  renderPhotoPreview(task);
+});
+
+function renderPhotoPreview(task) {
+  if (task && task.photo) {
+    photoPreview.innerHTML = `<img src="${task.photo}" alt="Photo for ${task.text}">`;
+    photoRemoveBtn.hidden = false;
+  } else {
+    photoPreview.innerHTML = "";
+    photoRemoveBtn.hidden = true;
+  }
+}
 
 notesText.addEventListener("input", () => {
   const task = tasks.find((t) => t.id === openTaskId);
@@ -296,13 +359,61 @@ form.addEventListener("submit", (e) => {
   const text = input.value.trim();
   if (!text) return;
 
-  tasks.push({ id: Date.now(), text, done: false, priority: priorityToggle.dataset.priority, notes: "" });
+  const task = { id: Date.now(), text, done: false, priority: priorityToggle.dataset.priority, notes: "" };
+  tasks.push(task);
   input.value = "";
   input.focus();
   setPriorityButton("medium");
   saveTasks();
   render();
+  suggestStepsFor(task);
 });
+
+// ---- AI: auto-suggest numbered steps for a new task ----
+// Uses Summit.generate to write a short numbered plan straight into the
+// task's notes, so opening a task's notes page already has a starting point.
+// generatingIds tracks tasks currently waiting on a reply, so the task row
+// can show a "thinking" indicator instead of looking broken while it waits.
+const generatingIds = new Set();
+
+async function suggestStepsFor(task) {
+  generatingIds.add(task.id);
+  render();
+
+  const prompt =
+    `Give a short numbered list (3-5 steps) of concrete steps to get this ` +
+    `to-do task done: "${task.text}". Just the numbered steps, no extra text.`;
+
+  let result;
+  try {
+    result = await Summit.generate(prompt);
+  } catch (e) {
+    generatingIds.delete(task.id);
+    render();
+    // Show the failure where a person will actually see it, without
+    // overwriting notes the student may have already started typing.
+    if (openTaskId === task.id) notesText.placeholder = e.message;
+    return;
+  }
+
+  generatingIds.delete(task.id);
+
+  const current = tasks.find((t) => t.id === task.id);
+  if (!current) return; // task was deleted while we were waiting
+
+  if (result && result.blocked) {
+    current.notes = result.message; // show the safety message exactly as written
+  } else if (!current.notes) {
+    // Only fill in notes if the student hasn't already written their own.
+    current.notes = result;
+  }
+  saveTasks();
+  render();
+
+  if (openTaskId === current.id) {
+    notesText.value = current.notes || "";
+  }
+}
 
 // ---- Speech-to-text: dictate a task using the device microphone ----
 // Uses the browser's built-in Web Speech API (no server, no API key needed).
