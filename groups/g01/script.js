@@ -21,11 +21,88 @@ const notesHeading = document.getElementById("notes-heading");
 const notesText = document.getElementById("notes-text");
 const notesBackBtn = document.getElementById("notes-back");
 
-let tasks = []; // { id, text, done, priority, notes }
+const loginView = document.getElementById("login-view");
+const loginForm = document.getElementById("login-form");
+const usernameInput = document.getElementById("username-input");
+const currentUserLabel = document.getElementById("current-user-label");
+const switchUserBtn = document.getElementById("switch-user-btn");
+
+let tasks = []; // { id, text, done, priority, notes } -- id is now the tasks-table row id
 let bannerIndex = 0;
 let bannerTimer = null;
 let bannerPaused = false;
 let openTaskId = null;
+let currentUser = null;
+
+// ---- Login: just a name, no password ----
+// This only keeps each name's task list separate -- it is not private.
+// Anyone who types the same name sees the same tasks, since everything in
+// this store is world-readable (see project notes on Summit.save).
+function tasksKeyFor(user) {
+  return `tasks_${user}`;
+}
+
+// ---- Storage tables ----
+// Tasks and photos each get their own row instead of one big saved blob per
+// user. This means one oversized photo can never break saving of the whole
+// task list -- only its own row is affected.
+Summit.db.create("tasks", { username: "text", text: "text", done: "bool", priority: "text", notes: "text" }).catch(
+  (e) => console.log("table create failed:", e.message)
+);
+Summit.db.create("photos", { task_id: "int", image: "text" }).catch((e) => console.log("table create failed:", e.message));
+
+// One-time migration: older versions of this app saved a user's whole task
+// list (including any photo) as a single Summit.save blob under
+// "tasks_<name>". If that old blob still exists for this user and the new
+// tasks table is empty for them, copy it over row by row, then clear the
+// old blob so this only ever runs once per user.
+async function migrateOldTasksIfNeeded(user) {
+  const already = await Summit.db.find("tasks", { username: user }, { limit: 1 });
+  if (already.length > 0) return; // already migrated (or never needed it)
+
+  const old = await Summit.load(tasksKeyFor(user));
+  if (!Array.isArray(old) || old.length === 0) return;
+
+  for (const t of old) {
+    const row = await Summit.db.insert("tasks", {
+      username: user,
+      text: t.text || "",
+      done: !!t.done,
+      priority: t.priority || "medium",
+      notes: t.notes || "",
+    });
+    if (t.photo) {
+      await Summit.db.insert("photos", { task_id: row.id, image: t.photo });
+    }
+  }
+  await Summit.save(tasksKeyFor(user), null); // done -- don't migrate again next login
+}
+
+loginForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const name = usernameInput.value.trim();
+  if (!name) return;
+  startSession(name);
+});
+
+switchUserBtn.addEventListener("click", () => {
+  currentUser = null;
+  tasks = [];
+  closeNotes();
+  mainView.hidden = true;
+  loginView.hidden = false;
+  usernameInput.value = "";
+  usernameInput.focus();
+});
+
+async function startSession(name) {
+  currentUser = name;
+  currentUserLabel.textContent = `👤 ${name}`;
+  loginView.hidden = true;
+  mainView.hidden = false;
+  await migrateOldTasksIfNeeded(name);
+  await loadTasks();
+}
 
 const PRIORITY_ORDER = { high: 0, medium: 1, low: 2 };
 const PRIORITY_CYCLE = ["low", "medium", "high"];
@@ -113,13 +190,23 @@ function drawTree(stage, x = 40, scale = 1) {
 }
 
 async function loadTasks() {
-  const saved = await Summit.load("tasks");
-  tasks = Array.isArray(saved) ? saved : [];
+  if (!currentUser) return;
+  const rows = await Summit.db.find("tasks", { username: currentUser });
+  // Each task also needs its photo, which lives in its own row/table.
+  tasks = await Promise.all(
+    rows.map(async (r) => {
+      const photos = await Summit.db.find("photos", { task_id: r.id }, { limit: 1 });
+      return {
+        id: r.id,
+        text: r.text,
+        done: !!r.done,
+        priority: r.priority,
+        notes: r.notes || "",
+        photo: photos[0] ? photos[0].image : "",
+      };
+    })
+  );
   render();
-}
-
-function saveTasks() {
-  Summit.save("tasks", tasks);
 }
 
 function render() {
@@ -188,7 +275,7 @@ function buildTaskRow(task) {
   checkbox.checked = task.done;
   checkbox.addEventListener("change", () => {
     task.done = checkbox.checked;
-    saveTasks();
+    Summit.db.update("tasks", { id: task.id }, { done: task.done });
     if (task.done) showCelebration();
     render();
   });
@@ -219,7 +306,8 @@ function buildTaskRow(task) {
   removeBtn.textContent = "✕";
   removeBtn.addEventListener("click", () => {
     tasks = tasks.filter((t) => t.id !== task.id);
-    saveTasks();
+    Summit.db.remove("tasks", { id: task.id });
+    Summit.db.remove("photos", { task_id: task.id });
     render();
   });
 
@@ -276,7 +364,10 @@ photoInput.addEventListener("change", (e) => {
     const task = tasks.find((t) => t.id === openTaskId);
     if (!task) return;
     task.photo = dataUrl;
-    saveTasks();
+    // Photos live in their own table/row so one large photo can never break
+    // saving of a task's text or notes.
+    Summit.db.remove("photos", { task_id: task.id });
+    Summit.db.insert("photos", { task_id: task.id, image: dataUrl }).catch((e) => console.log(e.message));
     renderPhotoPreview(task);
   };
   img.src = URL.createObjectURL(file);
@@ -287,7 +378,7 @@ photoRemoveBtn.addEventListener("click", () => {
   const task = tasks.find((t) => t.id === openTaskId);
   if (!task) return;
   task.photo = "";
-  saveTasks();
+  Summit.db.remove("photos", { task_id: task.id });
   renderPhotoPreview(task);
 });
 
@@ -305,7 +396,7 @@ notesText.addEventListener("input", () => {
   const task = tasks.find((t) => t.id === openTaskId);
   if (!task) return;
   task.notes = notesText.value;
-  saveTasks();
+  Summit.db.update("tasks", { id: task.id }, { notes: task.notes });
 });
 
 // Small pencil icon shown next to a task's name when it has notes saved.
@@ -467,4 +558,3 @@ if (SpeechRecognition) {
 }
 
 setPriorityButton("medium");
-loadTasks();
