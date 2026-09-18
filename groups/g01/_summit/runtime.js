@@ -1,9 +1,10 @@
 // Summit runtime -- generated per group by the platform. Do not edit.
 window.__SUMMIT__ = {
-  "ai_token": "ai.g01.1792205071.5312adaab49fbedff1383d7f4f83f1719ba2c2bf02dc7fab0219e1a7527096a6",
+  "ai_token": "ai.g01.1792312659.fd440d077ca13e28054558885283514a4e36d6f635447f5e874c89f55d8de7da",
   "api": "https://techsummit2026-production.up.railway.app",
   "gid": "g01",
-  "token": "data.g01.1805165071.df95dafea750c050827c901ac9c93ced7c23cb0309c8d6ba6510fa3af7ff1d6c"
+  "runtime_version": 1,
+  "token": "data.g01.1805272659.0cef98ccd66d05d8245d78b1a292d1792f2602596f6ebcfe72a85044ab5dca72"
 };
 
 (function () {
@@ -43,22 +44,6 @@ window.__SUMMIT__ = {
         });
       }
       return r.json();
-    });
-  }
-
-  function write(collection, value, key) {
-    var body = { value: value };
-    if (key !== undefined && key !== null) { body.key = key; }
-    return request("POST", "/api/data/" + collection, body);
-  }
-
-  function read(collection, key, limit) {
-    var q = "?limit=" + (limit || 100);
-    if (key !== undefined && key !== null) {
-      q += "&key=" + encodeURIComponent(key);
-    }
-    return request("GET", "/api/data/" + collection + q).then(function (d) {
-      return d.records || [];
     });
   }
 
@@ -204,36 +189,120 @@ window.__SUMMIT__ = {
   }
 
   window.Summit = {
-    save: function (key, value) { return write("kv", value, String(key)); },
+    // save/load/forget: key/value with overwrite semantics, over the
+    // per-group SQLite database Summit.db.* below also reads and writes --
+    // api/data.py's /api/data/kv/{key} route, backed by the reserved
+    // _summit_kv table. Each call here is a literal or `prefix + variable`
+    // path so tests/test_summit_runtime.py can check it against the app's
+    // own route table, not just read as prose.
+    //
+    // There used to be six more of these -- submitScore/leaderboard/vote/
+    // votes/clearScores/clearVotes, over two more reserved tables -- for a
+    // leaderboard and a poll. Retired by one-storage-model (spec
+    // 2026-09-18): a leaderboard is a table of scores with a sort, which
+    // Summit.db.* already does, so the second store bought nothing a
+    // student couldn't already do with it. See data_api_guide.md's worked
+    // example.
+    save: function (key, value) {
+      return request("POST", "/api/data/kv/" + encodeURIComponent(String(key)),
+                     { value: value });
+    },
     load: function (key) {
-      return read("kv", String(key), 1).then(function (rows) {
-        return rows.length ? rows[0].value : null;
-      });
+      return request("GET", "/api/data/kv/" + encodeURIComponent(String(key)))
+        .then(function (d) { return d.value; });
     },
-    submitScore: function (nick, score) {
-      return write("scores", { nick: String(nick), score: Number(score) });
+    // Row-level deletion is gameplay, so it belongs here, on the page --
+    // the same ruling as Summit.db.remove() below. Structural destruction
+    // (dropping a table, retyping a column, emptying the whole database)
+    // stays behind the group's own login or the coding agent. A write,
+    // like save above, so it resolves to the server's raw response object
+    // rather than an unwrapped value -- same convention as save.
+    //
+    // Delete one saved value outright -- what Summit.save(key, null) was
+    // standing in for, at the cost of a row that persists forever with an
+    // empty value in the Data tab. -> { deleted: 0 or 1 }.
+    forget: function (key) {
+      return request("DELETE", "/api/data/kv/" + encodeURIComponent(String(key)));
     },
-    leaderboard: function (opts) {
-      var limit = (opts && opts.limit) || 10;
-      // Sorted here rather than server-side so the API stays the two
-      // endpoints spec 8 specifies.
-      return read("scores", null, 500).then(function (rows) {
-        return rows.map(function (r) { return r.value; })
-          .filter(function (v) { return v && typeof v.score === "number"; })
-          .sort(function (a, b) { return b.score - a.score; })
-          .slice(0, limit);
-      });
-    },
-    vote: function (option) { return write("votes", { option: String(option) }); },
-    votes: function () {
-      return read("votes", null, 500).then(function (rows) {
-        var tally = {};
-        rows.forEach(function (r) {
-          var o = r.value && r.value.option;
-          if (o) { tally[o] = (tally[o] || 0) + 1; }
-        });
-        return tally;
-      });
+    // Summit.db.* -- tables, full CRUD on rows, and tally() (a GROUP BY
+    // COUNT with no row cap, for a poll or anything else counted by
+    // category), in the same per-group SQLite database save/load/forget
+    // above use. Every path here is either a literal `/api/data/...`
+    // string or `"/api/data/.../" + table` -- api/data.py's real routes,
+    // not the collection-style endpoints the sugar functions used to hit.
+    // `request()` above is what turns a non-2xx response's `detail` into
+    // a readable Error.message instead of "[object Object]" -- db.* gets
+    // that for free by going through it.
+    db: {
+      // { table: "monsters", columns: {id: "int", ts: "real", name:
+      // "text", hp: "int"}, added: [] } -- `columns` always includes the
+      // automatic id/ts; `added` lists any NEW columns when the table
+      // already existed (create() is also how you add a column later).
+      create: function (table, columns) {
+        return request("POST", "/api/data/tables",
+                       { table: table, columns: columns });
+      },
+      // An array of { table, columns, rows } -- how many tables exist and
+      // how big each one is.
+      tables: function () {
+        return request("GET", "/api/data/tables")
+          .then(function (r) { return r.tables; });
+      },
+      // { id: 7, ts: 1734000000.1 } -- the new row's id (use it later with
+      // update()/remove()) and the server timestamp it was written at.
+      insert: function (table, row) {
+        return request("POST", "/api/data/rows/" + encodeURIComponent(table),
+                       { row: row });
+      },
+      // A bare ARRAY of row objects, newest first by default -- never a
+      // wrapper. `where` is optional: { hp: { gt: 5 } }, { name: "Slime" },
+      // or omit it for every row. `options.sort`/`options.dir`/
+      // `options.limit` control ordering and how many come back (server
+      // caps at 500).
+      find: function (table, where, options) {
+        options = options || {};
+        var q = new URLSearchParams();
+        if (where) { q.set("where", JSON.stringify(where)); }
+        if (options.sort) { q.set("sort", options.sort); }
+        if (options.dir) { q.set("dir", options.dir); }
+        if (options.limit) { q.set("limit", String(options.limit)); }
+        var qs = q.toString();
+        return request("GET", "/api/data/rows/" + encodeURIComponent(table) +
+                       (qs ? "?" + qs : ""))
+          .then(function (r) { return r.rows; });
+      },
+      // { updated: 3 } -- how many rows matched `where` and got `changes`
+      // applied. Omitting `where` updates every row in the table.
+      update: function (table, where, changes) {
+        return request("PATCH", "/api/data/rows/" + encodeURIComponent(table),
+                       { where: where, changes: changes });
+      },
+      // A bare MAPPING of column value -> count, e.g. tally('votes',
+      // 'option') -> { cats: 12, dogs: 7 }. Counts EVERY row -- unlike
+      // find(), this has no 500-row cap, because a poll tallied by
+      // find()-ing every row and counting in JS silently undercounts once
+      // it crosses that cap, with no error and no truncation notice. Use
+      // this, not find() + a JS loop, whenever what you want is a count
+      // per category (a poll, tasks by priority, scores by player) rather
+      // than the rows themselves.
+      tally: function (table, column) {
+        return request("GET", "/api/data/tally/" + encodeURIComponent(table) +
+                       "?column=" + encodeURIComponent(column))
+          .then(function (r) { return r.counts; });
+      },
+      // { removed: 32 } -- how many rows were deleted. remove(table) with
+      // NO second argument clears every row and keeps the table, ready for
+      // the next insert -- that's how you reset a leaderboard, a poll, a
+      // board game, or any other table YOU made; there is no separate
+      // built-in store any more (one-storage-model, spec 2026-09-18) for
+      // check_student_table to carve out an exception for. Dropping the
+      // table itself, or changing a column's type, is not done from code
+      // -- ask your coding assistant in chat. The Data tab is read-only:
+      // it shows what's there, nothing more.
+      remove: function (table, where) {
+        return request("DELETE", "/api/data/rows/" + encodeURIComponent(table),
+                       { where: where || null });
+      }
     },
     // Unwrapped to the bare label, not the `{label: ...}` object
     // student_ai.py's _run_classify validates -- app/ai/prompts/
