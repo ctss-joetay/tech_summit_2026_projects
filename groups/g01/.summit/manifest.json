@@ -17,7 +17,33 @@
       "open_questions": [],
       "reason": "task-complete",
       "file": "001-2026-09-18-leaderboard-and-poll.md"
+    },
+    {
+      "id": "002",
+      "date": "2026-09-18",
+      "topic": "database-schema-review",
+      "files_touched": [],
+      "decisions": [],
+      "open_questions": [],
+      "reason": "publish",
+      "file": "002-2026-09-18-database-schema-review.md"
+    },
+    {
+      "id": "003",
+      "date": "2026-09-18",
+      "topic": "age-column-float",
+      "files_touched": [
+        "script.js",
+        "index.html"
+      ],
+      "decisions": [
+        "Changed age column from int to real (float) to support decimal ages like 25.5",
+        "Set age input step to 0.1 and use parseFloat instead of parseInt to match the float storage"
+      ],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "003-2026-09-18-age-column-float.md"
     }
   ],
-  "last_summary_ts": 1789720536.8072894
+  "last_summary_ts": 1789720795.126631
 }

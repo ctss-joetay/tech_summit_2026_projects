@@ -6,7 +6,7 @@ const leaderboardList = document.getElementById("leaderboard-list");
 
 async function setupLeaderboardTable() {
   try {
-    await Summit.db.create("leaderboard", { name: "text", age: "int" });
+    await Summit.db.create("leaderboard", { name: "text", age: "real" });
   } catch (e) {
     console.log("leaderboard table:", e.message);
   }
@@ -31,7 +31,7 @@ if (ageForm) {
   ageForm.addEventListener("submit", async function (e) {
     e.preventDefault();
     const name = nameInput.value.trim();
-    const age = parseInt(ageInput.value, 10);
+    const age = parseFloat(ageInput.value);
     if (!name || isNaN(age)) return;
     try {
       await Summit.db.insert("leaderboard", { name: name, age: age });
