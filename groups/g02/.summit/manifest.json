@@ -1,4 +1,42 @@
 {
   "gid": "g02",
-  "contexts": []
+  "contexts": [
+    {
+      "id": "001",
+      "date": "2026-09-20",
+      "topic": "join-screen-and-home-room",
+      "files_touched": [
+        "script.js",
+        "index.html"
+      ],
+      "decisions": [
+        "Nothing persists between sessions per brief \u2014 users must re-enter name each visit",
+        "Used a shared database table for avatars, polled every 2 seconds, so multiple visitors see each other in the home room",
+        "Built join screen + home room first as the single working piece; status-setting and voice call deferred to later turns"
+      ],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "001-2026-09-20-join-screen-and-home-room.md"
+    },
+    {
+      "id": "002",
+      "date": "2026-09-20",
+      "topic": "isometric-room-and-wandering",
+      "files_touched": [
+        "style.css",
+        "script.js"
+      ],
+      "decisions": [
+        "Room rebuilt as true isometric hexagon using CSS clip-path for floor rhombus + two wall rhombuses instead of vanishing-point perspective",
+        "Idle/free avatars wander randomly within the floor diamond every 3-6s via absolute positioning + CSS transitions; busy statuses (working, sleeping, chores, playing games, exercising) stay put",
+        "Polling now updates existing sprite elements in place rather than clearing/rebuilding the room, so wandering isn't reset each poll"
+      ],
+      "open_questions": [
+        "Status-setting UI (click own avatar to choose status) still not built - status only defaults to 'relaxing' at join"
+      ],
+      "reason": "task-complete",
+      "file": "002-2026-09-20-isometric-room-and-wandering.md"
+    }
+  ],
+  "last_summary_ts": 1789873676.4506173
 }

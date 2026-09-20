@@ -3,14 +3,59 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>My Project</title>
+  <title>Grandkid House</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <main>
-    <h1>Hello, Tech Summit!</h1>
-    <p>Edit this page in the IDE, or ask the AI to build something.</p>
-  </main>
+
+  <section id="join-screen" class="screen">
+    <div class="join-card">
+      <h1>🏡 Grandkid House</h1>
+      <p>A cosy room where the family hangs out.</p>
+      <label for="name-input">What's your name?</label>
+      <input id="name-input" type="text" placeholder="e.g. Ahma" maxlength="16">
+      <button id="join-btn">Join the house</button>
+      <p id="join-error" class="error" role="alert"></p>
+    </div>
+  </section>
+
+  <section id="home-screen" class="screen hidden">
+    <header class="home-header">
+      <h1>🏡 Grandkid House</h1>
+      <span id="who-am-i"></span>
+    </header>
+    <div id="room" class="room" aria-label="Living room">
+      <div class="face floor"></div>
+      <div class="face wall-left"></div>
+      <div class="face wall-right"></div>
+      <div id="avatar-layer"></div>
+    </div>
+    <p id="home-status" class="hint">Loading everyone in the house…</p>
+    <button id="call-btn" class="hidden">📞 Start / join call</button>
+  </section>
+
+  <section id="call-screen" class="screen hidden">
+    <header class="home-header">
+      <h1>📞 Family Call</h1>
+      <button id="leave-call-btn">Leave call</button>
+    </header>
+    <div id="table-area" class="table-area">
+      <div class="round-table"></div>
+      <div id="call-ring"></div>
+    </div>
+    <p id="call-status" class="hint">Connecting…</p>
+  </section>
+
+  <div id="status-picker" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <h2>What are you up to?</h2>
+      <div id="status-options" class="status-options"></div>
+      <button id="status-cancel" class="secondary-btn">Cancel</button>
+    </div>
+  </div>
+
+  <script src="_summit/runtime.js"></script>
   <script src="script.js"></script>
+  <script src="call.js"></script>
 </body>
 </html>
