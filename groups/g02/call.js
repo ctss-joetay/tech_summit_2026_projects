@@ -40,7 +40,9 @@ async function checkCallAvailability() {
       callBtn.classList.add("hidden");
     }
   } catch (e) {
-    // quiet failure here — home-room status line already reports db errors
+    // Surface this instead of failing silently, so a real problem (not just
+    // "nobody's free yet") is visible rather than looking like a missing button.
+    homeStatusMessage("Could not check for a call: " + e.message);
   }
 }
 setInterval(checkCallAvailability, 2000);

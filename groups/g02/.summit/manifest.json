@@ -36,7 +36,47 @@
       ],
       "reason": "task-complete",
       "file": "002-2026-09-20-isometric-room-and-wandering.md"
+    },
+    {
+      "id": "003",
+      "date": "2026-09-20",
+      "topic": "status-picker-and-voice-chat",
+      "files_touched": [
+        "script.js",
+        "index.html",
+        "call.js"
+      ],
+      "decisions": [
+        "Added a status-picker popup for own avatar with 7 statuses, updating shared table and sprite icon",
+        "Implemented voice chat via mesh WebRTC using a 'signals' table in the shared database as a signaling server substitute, since there's no real backend server",
+        "Added 'in_call' flag to avatars table to track call membership",
+        "Call UI shows participants seated around a round table, with cuboids scaling/pulsing when talking (measured via Web Audio API)",
+        "Start/Join call button appears only when 2+ users set status to 'free to chat'",
+        "Roster re-polls every 1.5s to handle mid-call joins/leaves"
+      ],
+      "open_questions": [
+        "Whether live preview sandbox will block microphone access (getUserMedia) \u2014 may need testing on published site instead"
+      ],
+      "reason": "publish",
+      "file": "003-2026-09-20-status-picker-and-voice-chat.md"
+    },
+    {
+      "id": "004",
+      "date": "2026-09-20",
+      "topic": "fix-join-call-button",
+      "files_touched": [
+        "script.js",
+        "index.html"
+      ],
+      "decisions": [
+        "Kept the in_call column on the avatars table (needed for call feature) and fixed the mismatch by adding it to script.js's ensureTable() so both files agree on schema",
+        "Made status/button checks run immediately on join and status change instead of waiting for the 2-second polling tick",
+        "Pinned the join-call button (#call-btn) to fixed position at bottom-center of screen so it's always visible instead of being pushed below the fold in normal page flow"
+      ],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "004-2026-09-20-fix-join-call-button.md"
     }
   ],
-  "last_summary_ts": 1789873676.4506173
+  "last_summary_ts": 1789890592.5626209
 }

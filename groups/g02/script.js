@@ -57,6 +57,7 @@ async function chooseStatus(status) {
     await Summit.db.update("avatars", { name: myName }, { status: status });
     closeStatusPicker();
     renderRoom();
+    if (typeof checkCallAvailability === "function") checkCallAvailability();
   } catch (e) {
     homeStatus.textContent = "Could not set status: " + e.message;
   }
@@ -111,7 +112,8 @@ async function ensureTable() {
   await Summit.db.create("avatars", {
     name: "text",
     color: "text",
-    status: "text"
+    status: "text",
+    in_call: "bool"
   });
 }
 

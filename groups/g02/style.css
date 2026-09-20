@@ -272,7 +272,11 @@ button:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--accent-dar
 }
 
 #call-btn {
-  margin-top: 1rem;
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
 }
 
 /* ---------- Call screen ---------- */
