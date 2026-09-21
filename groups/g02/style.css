@@ -80,17 +80,13 @@ body {
   color: var(--ink);
   background: var(--yellow);
   box-shadow: 6px 6px 0 var(--ink);
-  transition: transform 0.15s ease;
+  transition: transform 0.12s ease-out;
   cursor: pointer;
 }
 
 .level-card:nth-child(3n+1) { background: var(--yellow); }
 .level-card:nth-child(3n+2) { background: var(--blue); color: white; }
 .level-card:nth-child(3n)   { background: var(--main); color: white; }
-
-.level-card:hover {
-  transform: translateY(-6px) scale(1.05);
-}
 
 .level-card .level-label {
   font-size: 0.9rem;

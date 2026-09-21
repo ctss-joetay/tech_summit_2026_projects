@@ -46,31 +46,79 @@ strip.addEventListener("touchmove", (e) => {
   strip.scrollLeft = startScroll - (e.touches[0].pageX - startX);
 });
 
-// --- Hover-edge auto-scroll ---
-let scrollTimer = null;
+// --- Hover-edge auto-scroll (frame-synced, not a fixed timer) ---
+let scrollDirection = 0;
+let scrollRafId = null;
+let lastFrameTime = null;
 
-function startAutoScroll(direction) {
-  stopAutoScroll();
+function autoScrollStep(time) {
+  if (lastFrameTime === null) lastFrameTime = time;
+  const dt = time - lastFrameTime;
+  lastFrameTime = time;
   try {
-    scrollTimer = setInterval(() => {
-      strip.scrollLeft += direction * 12;
-    }, 16);
+    if (scrollDirection !== 0) {
+      // pixels per second, scaled by real elapsed time so speed
+      // stays constant even if a frame is slow
+      strip.scrollLeft += scrollDirection * 0.6 * dt;
+      scrollRafId = requestAnimationFrame(autoScrollStep);
+    } else {
+      scrollRafId = null;
+      lastFrameTime = null;
+    }
   } catch (err) {
     selectError.textContent = "issue with movement animations";
   }
 }
 
-function stopAutoScroll() {
-  if (scrollTimer) {
-    clearInterval(scrollTimer);
-    scrollTimer = null;
+function startAutoScroll(direction) {
+  scrollDirection = direction;
+  if (scrollRafId === null) {
+    lastFrameTime = null;
+    scrollRafId = requestAnimationFrame(autoScrollStep);
   }
+}
+
+function stopAutoScroll() {
+  scrollDirection = 0;
 }
 
 hoverLeft.addEventListener("mouseenter", () => startAutoScroll(-1));
 hoverLeft.addEventListener("mouseleave", stopAutoScroll);
 hoverRight.addEventListener("mouseenter", () => startAutoScroll(1));
 hoverRight.addEventListener("mouseleave", stopAutoScroll);
+
+// --- Scale cards by distance from the strip's center: middle 3 are
+// biggest, cards shrink toward the left/right edges ---
+let scaleRafId = null;
+
+function updateCardScales() {
+  const stripRect = strip.getBoundingClientRect();
+  const centerX = stripRect.left + stripRect.width / 2;
+  const cards = strip.querySelectorAll(".level-card");
+  const maxDist = stripRect.width / 2 + 80;
+
+  cards.forEach((card) => {
+    const cardRect = card.getBoundingClientRect();
+    const cardCenter = cardRect.left + cardRect.width / 2;
+    const dist = Math.abs(cardCenter - centerX);
+    const t = Math.min(dist / maxDist, 1);
+    // 1.15 at center, down to 0.6 at the edges
+    const scale = 1.15 - t * 0.55;
+    card.style.transform = `scale(${scale})`;
+    card.style.zIndex = String(Math.round((1 - t) * 100));
+  });
+  scaleRafId = null;
+}
+
+function requestScaleUpdate() {
+  if (scaleRafId === null) {
+    scaleRafId = requestAnimationFrame(updateCardScales);
+  }
+}
+
+strip.addEventListener("scroll", requestScaleUpdate, { passive: true });
+window.addEventListener("resize", requestScaleUpdate);
+requestScaleUpdate();
 
 // ---------- Level stage ----------
 // Actual gameplay (mic, notes, hearts, win/lose) lives in level.js.
