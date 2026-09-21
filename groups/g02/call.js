@@ -73,13 +73,29 @@ async function startCall() {
   rosterTimer = setInterval(pollRoster, 1500);
   signalTimer = setInterval(pollSignals, 1000);
   pollRoster();
+  setupOwnMeter();
+}
+
+// Show a meter for the local mic itself, separate from the peer connection,
+// so "is my mic picking anything up at all" can be answered even if the
+// WebRTC link to someone else never connects.
+async function setupOwnMeter() {
+  let myColor = null;
+  try {
+    const mine = await Summit.db.find("avatars", { name: myName });
+    if (mine[0]) myColor = mine[0].color;
+  } catch (e) {}
+  if (!peers[myName]) addSeat(myName, myColor, true);
+  setupVoiceMeter(myName, localStream);
+  layoutSeats();
 }
 
 async function leaveCall() {
   inCall = false;
   clearInterval(rosterTimer);
   clearInterval(signalTimer);
-  Object.keys(peers).forEach(removePeer);
+  Object.keys(peers).forEach(function (name) { removePeer(name); });
+  peers = {};
   if (localStream) {
     localStream.getTracks().forEach(function (t) { t.stop(); });
     localStream = null;
@@ -137,19 +153,28 @@ async function pollRoster() {
 }
 
 // ---------- Seats around the table ----------
-function addSeat(name, color) {
+function addSeat(name, color, isSelf) {
   const seat = document.createElement("div");
   seat.className = "call-seat";
   const body = document.createElement("div");
   body.className = "call-avatar-body";
   body.style.background = color || "#BAE6FD";
+  const meter = document.createElement("div");
+  meter.className = "mic-meter";
+  const meterFill = document.createElement("div");
+  meterFill.className = "mic-meter-fill";
+  meter.appendChild(meterFill);
   const label = document.createElement("div");
   label.className = "call-name";
-  label.textContent = name;
+  label.textContent = isSelf ? name + " (you)" : name;
   seat.appendChild(body);
+  seat.appendChild(meter);
   seat.appendChild(label);
   callRing.appendChild(seat);
-  peers[name] = { pc: null, audioEl: null, analyser: null, dataArray: null, seatEl: seat, bodyEl: body, pendingCandidates: [] };
+  peers[name] = {
+    pc: null, audioEl: null, analyser: null, dataArray: null,
+    seatEl: seat, bodyEl: body, meterFillEl: meterFill, pendingCandidates: []
+  };
 }
 
 function layoutSeats() {
@@ -345,6 +370,13 @@ function meterLoop() {
       p.bodyEl.classList.add("talking");
     } else {
       p.bodyEl.classList.remove("talking");
+    }
+    // Meter bar: fills 0-100% with mic/audio level, so you can see a
+    // signal is being picked up even before "talking" threshold is hit,
+    // and even if the WebRTC connection to a peer never completes.
+    if (p.meterFillEl) {
+      const pct = Math.max(0, Math.min(100, (level / 60) * 100));
+      p.meterFillEl.style.width = pct + "%";
     }
   });
   requestAnimationFrame(meterLoop);

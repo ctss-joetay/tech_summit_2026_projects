@@ -335,3 +335,22 @@ button:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--accent-dar
   border-radius: 999px;
   border: 2px solid var(--wood);
 }
+
+/* Mic/audio level meter: fills up as sound is detected, so you can see a
+   signal is coming through even if the call connection itself is silent. */
+.mic-meter {
+  width: 56px;
+  height: 8px;
+  background: rgba(0,0,0,0.1);
+  border-radius: 999px;
+  overflow: hidden;
+  border: 2px solid var(--wood);
+}
+
+.mic-meter-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--accent);
+  border-radius: 999px;
+  transition: width 0.08s linear;
+}

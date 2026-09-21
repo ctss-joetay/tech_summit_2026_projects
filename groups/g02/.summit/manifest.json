@@ -109,7 +109,25 @@
       ],
       "reason": "task-complete",
       "file": "006-2026-09-21-webrtc-call-audio-fix.md"
+    },
+    {
+      "id": "007",
+      "date": "2026-09-21",
+      "topic": "mic-level-meter",
+      "files_touched": [
+        "script.js",
+        "index.html",
+        "style.css"
+      ],
+      "decisions": [
+        "Added a per-seat visible mic-level meter (including local user's own seat) so users can distinguish mic-capture failure from peer-connection/audio-delivery failure, rather than relying only on the binary .talking class on remote peers"
+      ],
+      "open_questions": [
+        "Is the audio not being picked up due to mic permissions/capture, or due to WebRTC peer connection delivery? (meter added to help diagnose but root cause not yet confirmed)"
+      ],
+      "reason": "task-complete",
+      "file": "007-2026-09-21-mic-level-meter.md"
     }
   ],
-  "last_summary_ts": 1790000727.4373164
+  "last_summary_ts": 1790001163.0615983
 }
