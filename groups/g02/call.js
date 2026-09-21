@@ -149,7 +149,7 @@ function addSeat(name, color) {
   seat.appendChild(body);
   seat.appendChild(label);
   callRing.appendChild(seat);
-  peers[name] = { pc: null, audioEl: null, analyser: null, dataArray: null, seatEl: seat, bodyEl: body };
+  peers[name] = { pc: null, audioEl: null, analyser: null, dataArray: null, seatEl: seat, bodyEl: body, pendingCandidates: [] };
 }
 
 function layoutSeats() {
@@ -178,7 +178,23 @@ function removePeer(name) {
 // ---------- WebRTC ----------
 function createPeerConnection(name, isInitiator) {
   const pc = new RTCPeerConnection({
-    iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
+    iceServers: [
+      { urls: "stun:stun.l.google.com:19302" },
+      // STUN alone only works if both devices can reach each other
+      // directly. Plenty of home/mobile networks block that, so without a
+      // TURN relay two real devices can sit at "Connecting..." forever with
+      // no track ever arriving -- which looks exactly like "no audio, no
+      // reactive shapes" on both ends. This is a free public test relay.
+      {
+        urls: [
+          "turn:openrelay.metered.ca:80",
+          "turn:openrelay.metered.ca:443",
+          "turn:openrelay.metered.ca:443?transport=tcp"
+        ],
+        username: "openrelayproject",
+        credential: "openrelayproject"
+      }
+    ]
   });
   peers[name].pc = pc;
 
@@ -192,11 +208,35 @@ function createPeerConnection(name, isInitiator) {
     }
   };
 
+  // Surface real connection state instead of leaving "Connecting..." up
+  // forever with no clue whether it worked, failed, or is still trying.
+  pc.oniceconnectionstatechange = function () {
+    console.log("ICE state with " + name + ":", pc.iceConnectionState);
+    if (pc.iceConnectionState === "failed") {
+      callStatus.textContent = "Could not connect to " + name + " (network blocked the connection).";
+    } else if (pc.iceConnectionState === "connected" || pc.iceConnectionState === "completed") {
+      const count = Object.keys(peers).length + 1;
+      callStatus.textContent = count <= 1 ? "Waiting for someone else to join…" : count + " people on the call.";
+    }
+  };
+
   pc.ontrack = function (e) {
     const audioEl = document.createElement("audio");
     audioEl.autoplay = true;
+    audioEl.volume = 1;
     audioEl.srcObject = e.streams[0];
     document.body.appendChild(audioEl);
+    // Some browsers won't start playback from the "autoplay" attribute
+    // alone once it's attached outside a direct click handler (which this
+    // is, since it fires from a network/ICE event) -- calling play()
+    // explicitly, and surfacing a blocked-by-browser case, avoids silent
+    // "connected but no sound".
+    const playPromise = audioEl.play();
+    if (playPromise && playPromise.catch) {
+      playPromise.catch(function (err) {
+        callStatus.textContent = "Audio blocked by the browser: " + err.message;
+      });
+    }
     peers[name].audioEl = audioEl;
     setupVoiceMeter(name, e.streams[0]);
   };
@@ -223,7 +263,10 @@ async function pollSignals() {
   if (!inCall) return;
   let mine;
   try {
-    mine = await Summit.db.find("signals", { to: myName });
+    // Oldest first: find() defaults to newest-first, which can put an ICE
+    // candidate ahead of the offer/answer it depends on in the same poll,
+    // silently breaking the connection.
+    mine = await Summit.db.find("signals", { to: myName }, { sort: "ts", dir: "asc" });
   } catch (e) {
     return;
   }
@@ -243,6 +286,7 @@ async function handleSignal(sig) {
     if (!peers[from].pc) createPeerConnection(from, false);
     const pc = peers[from].pc;
     await pc.setRemoteDescription(new RTCSessionDescription(payload));
+    await drainPendingCandidates(from);
     const answer = await pc.createAnswer();
     await pc.setLocalDescription(answer);
     sendSignal(from, "answer", pc.localDescription);
@@ -250,12 +294,31 @@ async function handleSignal(sig) {
   } else if (sig.type === "answer") {
     if (peers[from] && peers[from].pc) {
       await peers[from].pc.setRemoteDescription(new RTCSessionDescription(payload));
+      await drainPendingCandidates(from);
     }
   } else if (sig.type === "candidate") {
-    if (peers[from] && peers[from].pc) {
-      try { await peers[from].pc.addIceCandidate(new RTCIceCandidate(payload)); }
+    const p = peers[from];
+    // A candidate can arrive before its offer/answer has set the remote
+    // description -- addIceCandidate throws if called too early, which
+    // silently kills that one connection with nothing on screen to explain
+    // "no sound". Queue it and add it once the remote description lands.
+    if (p && p.pc && p.pc.remoteDescription && p.pc.remoteDescription.type) {
+      try { await p.pc.addIceCandidate(new RTCIceCandidate(payload)); }
       catch (e) {}
+    } else if (p) {
+      p.pendingCandidates.push(payload);
     }
+  }
+}
+
+async function drainPendingCandidates(name) {
+  const p = peers[name];
+  if (!p || !p.pc) return;
+  const queued = p.pendingCandidates || [];
+  p.pendingCandidates = [];
+  for (const c of queued) {
+    try { await p.pc.addIceCandidate(new RTCIceCandidate(c)); }
+    catch (e) {}
   }
 }
 

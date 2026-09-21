@@ -76,7 +76,40 @@
       "open_questions": [],
       "reason": "task-complete",
       "file": "004-2026-09-20-fix-join-call-button.md"
+    },
+    {
+      "id": "005",
+      "date": "2026-09-20",
+      "topic": "multi-device-preview-debugging",
+      "files_touched": [],
+      "decisions": [
+        "Determined the IDE live preview relies on postMessage to its own IDE tab, so it cannot reliably support multi-device testing even when both devices have the full IDE open",
+        "Recommended publishing the site and testing on the published URL instead of the in-IDE preview, since that removes the IDE-bridge dependency"
+      ],
+      "open_questions": [
+        "Whether the join-fails-on-preview error is a platform live-preview messaging flakiness issue or something fixable in script.js/call.js"
+      ],
+      "reason": "publish",
+      "file": "005-2026-09-20-multi-device-preview-debugging.md"
+    },
+    {
+      "id": "006",
+      "date": "2026-09-21",
+      "topic": "webrtc-call-audio-fix",
+      "files_touched": [
+        "call.js"
+      ],
+      "decisions": [
+        "Rejected assuming STUN alone was sufficient; added a free public TURN relay (openrelay.metered.ca) as fallback since many networks block direct P2P connections",
+        "Left silent 'Connecting\u2026' UI in place initially but decided to surface ICE connection state on screen instead of failing silently"
+      ],
+      "open_questions": [
+        "Whether the free TURN relay (openrelay.metered.ca) will stay reliably available for a live demo",
+        "Whether the fixes (candidate buffering, explicit audio.play(), TURN relay) actually resolve the no-audio/no-visualizer issue when tested on two real devices"
+      ],
+      "reason": "task-complete",
+      "file": "006-2026-09-21-webrtc-call-audio-fix.md"
     }
   ],
-  "last_summary_ts": 1789890592.5626209
+  "last_summary_ts": 1790000727.4373164
 }
