@@ -3,60 +3,53 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Grandkid House</title>
+  <title>Pitch Quest</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <section id="join-screen" class="screen">
-    <div class="join-card">
-      <h1>🏡 Grandkid House</h1>
-      <p>A cosy room where the family hangs out.</p>
-      <label for="name-input">What's your name?</label>
-      <input id="name-input" type="text" placeholder="e.g. Ahma" maxlength="16">
-      <button id="join-btn">Join the house</button>
-      <p id="join-error" class="error" role="alert"></p>
+  <section id="select-screen" class="screen">
+    <h1 class="title">🎤 Pitch Quest</h1>
+    <p class="subtitle">Pick a level, then sing your way through it!</p>
+
+    <div id="slider-track" class="slider-track">
+      <div id="hover-left" class="hover-zone hover-left"></div>
+      <div id="slider-strip" class="slider-strip">
+        <!-- level cards injected by script.js -->
+      </div>
+      <div id="hover-right" class="hover-zone hover-right"></div>
     </div>
+
+    <p id="select-hint" class="hint">Drag the row, or hold your mouse near an edge to scroll. Click a level to start.</p>
+    <p id="select-error" class="error" role="alert"></p>
   </section>
 
-  <section id="home-screen" class="screen hidden">
-    <header class="home-header">
-      <h1>🏡 Grandkid House</h1>
-      <span id="who-am-i"></span>
-    </header>
-    <div id="room" class="room" aria-label="Living room">
-      <div class="face floor"></div>
-      <div class="face wall-left"></div>
-      <div class="face wall-right"></div>
-      <div id="avatar-layer"></div>
+  <section id="level-screen" class="screen hidden">
+    <div id="hearts" class="hearts"></div>
+    <div id="mic-status" class="mic-status">
+      <span id="mic-label">🎙️</span>
+      <div class="mic-meter"><div id="mic-meter-fill" class="mic-meter-fill"></div></div>
     </div>
-    <p id="home-status" class="hint">Loading everyone in the house…</p>
+    <div id="stage-message" class="stage-message"></div>
+    <div id="staff-area" class="staff-area">
+      <div id="staff-lines" class="staff-lines"></div>
+      <div id="notes-layer" class="notes-layer"></div>
+      <div id="confetti-layer" class="confetti-layer"></div>
+      <div id="player-square" class="player-square"></div>
+      <div id="result-overlay" class="result-overlay hidden">
+        <div id="result-title" class="result-title"></div>
+        <div class="result-buttons">
+          <button id="retry-btn" class="secondary-btn">Retry</button>
+          <button id="result-back-btn" class="secondary-btn">← Levels</button>
+        </div>
+      </div>
+    </div>
+    <p class="hint">Press <strong>Space</strong> or click the stage to start. Sing to move up and down!</p>
+    <button id="back-btn" class="secondary-btn">← Back to levels</button>
   </section>
-
-  <button id="call-btn" class="hidden">📞 Start / join call</button>
-
-  <section id="call-screen" class="screen hidden">
-    <header class="home-header">
-      <h1>📞 Family Call</h1>
-      <button id="leave-call-btn">Leave call</button>
-    </header>
-    <div id="table-area" class="table-area">
-      <div class="round-table"></div>
-      <div id="call-ring"></div>
-    </div>
-    <p id="call-status" class="hint">Connecting…</p>
-  </section>
-
-  <div id="status-picker" class="modal-backdrop hidden">
-    <div class="modal-card">
-      <h2>What are you up to?</h2>
-      <div id="status-options" class="status-options"></div>
-      <button id="status-cancel" class="secondary-btn">Cancel</button>
-    </div>
-  </div>
 
   <script src="_summit/runtime.js"></script>
   <script src="script.js"></script>
-  <script src="call.js"></script>
+  <script src="level.js"></script>
 </body>
 </html>

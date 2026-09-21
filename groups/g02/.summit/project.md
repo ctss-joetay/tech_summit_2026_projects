@@ -1,22 +1,23 @@
 
-# Project Brief: Grandkid House (for g02)
+# Project Brief: Pitch Quest (g02)
 
-WHO: elderly (65+) users, comfortable with phones but not complex apps. They miss family, esp. overseas grandkids, and want a simple way to feel connected/see each other.
+WHO: kids 10-15 who play platformers, feeling stressed with no safe outlet to make noise (karaoke etc. is expensive/inaccessible). This app is a loud, silly, cathartic singing game.
 
-WHAT WE'RE BUILDING: A cosy shared "home" webpage. Everyone who joins appears as a cute rounded cuboid avatar (Stardew-Junimo-like) in an isometric pastel living room. No login/accounts — just type a name and join. Nothing is remembered between visits — must type name again each time.
+WHAT WE'RE BUILDING: A pitch-matching platformer. A black square avatar auto-moves right; the player controls its HEIGHT by singing (pitch via mic) — higher note sung = higher position. It must match a scrolling music staff/notes in the background (sight-reading), for a 15-second song per level. Missing a note = -1 HP (start at 20 HP, shown as hearts top-left). Clear the level by surviving to the end of the song.
 
 KEY FEATURES (build order):
-1. Name + Join screen (refuse empty name, show a clear message)
-2. Isometric-styled home room showing every joined avatar (real shared presence via Summit.db table, polled)
-3. Click own avatar → choose status: working, sleeping, chores, playing games, relaxing, exercising, free to chat — shown as icon/label on the sprite, persists until changed
-4. Voice chat: when 2+ avatars are "free to chat", they can start/join a group call; a dedicated call screen shows avatars around a round table with animated voice-reactive shapes; Leave/End Call returns to home room. Must support people joining/leaving while 2+ remain.
+1. Home/level-select screen: slider of levels 1-10, drag with finger/mouse OR hover near left/right edge to auto-scroll
+2. Level stage: staff of notes scrolls leftward, square moves up/down to match pitch sung via mic
+3. Health system: 20 HP hearts, -1 per missed note, level fails at 0 HP
+4. Win condition: survive full 15s song = level clear screen
+5. Mic volume visual feedback (even before pitch matching) so kids know mic is working
 
-VISUAL RULES: main colour #2DD4BF, pastel palette, isometric cute pixel-art feel, wood/cosy living-room vibe, rounded shapes only. NEVER minimal black-and-white or sharp corners.
+VISUAL RULES: pop art, primary colours #FF6251 (main), #3B82F6, #3B82F6, #FECB3E. White background with black staff lines/notes (comic/sheet-music look). Geometric shapes around the border pop with color and blast confetti animation when a note is hit. Always some animation — never static/rigid/boring.
+
+DATA: nothing persists — no accounts, no saved scores/levels. Everything resets on reload.
 
 CHECKS TO KEEP WORKING:
-- Join/end-call buttons must visibly change the screen, or show a clear error
-- Clicking status changes the avatar's animation/label until next change, or shows a clear error
-- Empty name is refused with a message asking for a name
-- A call with 2+ people stays alive when someone joins/leaves
-
-DATA: Shared avatar presence lives in a Summit.db table (`avatars`: name, color, status) — this is the group's live "who's home" list, polled by all visitors. Nothing else is saved (no login persistence, per brief).
+1. Level starts on click or spacebar press — else show "issue with starting the level"
+2. Mic input shows a live volume visual; if no mic detected, show "no microphone input"
+3. Hovering left/right edge of level-select auto-scrolls; else show "issue with movement animations"
+4. Level runs until death or 15s end; on crash, show a clear error message naming what broke
