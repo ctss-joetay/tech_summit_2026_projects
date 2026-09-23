@@ -38,7 +38,7 @@ jobs:
             # so a unicode filename never matches the `^groups/` anchor below
             # and a cross-group commit hiding behind it would score 1 and pass.
             count=$(git -c core.quotePath=false show --pretty="" --name-only -m --first-parent "$sha" \
-              | grep -oE '^groups/g[0-9]{2}/' | sort -u | wc -l)
+              | grep -oE '^groups/(g[0-9]{2}|demo[1-5])/' | sort -u | wc -l)
             if [ "$count" -gt 1 ]; then
               echo "::error::commit $sha touches multiple group folders"
               exit 1
