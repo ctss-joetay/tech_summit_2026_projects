@@ -1,10 +1,10 @@
 // Summit runtime -- generated per group by the platform. Do not edit.
 window.__SUMMIT__ = {
-  "ai_token": "ai.g02.1792466201.8c03f53571892a96be3bfc9f2de4379a43c76508448a799b027daf6044372f46",
+  "ai_token": "ai.g02.1792732042.fd81c1e9be364d85cf35a90a291419fc97372e1f24e5a0ce44d838e529a02022",
   "api": "https://techsummit2026-production.up.railway.app",
   "gid": "g02",
-  "runtime_version": 1,
-  "token": "data.g02.1805426201.fca7b6989e7c653d19a7f1c3e991846f4feac3fb1d9690bc6ab9795c0f44000d"
+  "runtime_version": 3,
+  "token": "data.g02.1805692042.b6de8191710768161e0976607e969a29439afd21d050685b8bc9ff497deb258a"
 };
 
 (function () {
@@ -516,6 +516,61 @@ window.__SUMMIT__ = {
   // origin even in a sandboxed document (measured), so it would install
   // this on published pages too and break them.
   if (self.origin === "null" && window.parent !== window) {
+    // --- capability state (preview bridges slice 2) ----------------------
+    // The parent posts { type: "summit:capability-state", capability, state }
+    // on every consent transition, and again whenever this document asks.
+    // It is what lets a polyfill settle a refusal at once instead of
+    // polling for 30 seconds, and tell "nobody is bridging" (a gallery
+    // card: no state ever arrives) from "a human has an Allow button in
+    // front of them" (pending).
+    var capState = {};
+    // capability -> function run once when a capability that WAS live
+    // stops being live (Stop in the strip, the parent's idle timer, a
+    // teardown). The camera and microphone register one to end the tracks
+    // they handed out, so a student's track.readyState reads "ended" and
+    // their loop can notice. Motion registers none: it hands out no
+    // object, and a stopped bridge simply stops dispatching.
+    var capEnded = {};
+    var NO_BRIDGE_MS = 2000;
+    var GIVE_UP_MS = 30000;
+    window.addEventListener("message", function (e) {
+      var d = e.data;
+      if (e.source !== window.parent) { return; }
+      if (!d || d.type !== "summit:capability-state" || !d.capability) { return; }
+      var was = capState[d.capability];
+      capState[d.capability] = d.state;
+      if (was === "granted" && d.state !== "granted" && capEnded[d.capability]) {
+        var ended = capEnded[d.capability];
+        capEnded[d.capability] = null;
+        try { ended(); } catch (err) { /* nothing more to do */ }
+      }
+    });
+    // The one deadline every polyfill shares. `waited` is the caller's own
+    // poll clock in ms.
+    function capDead(name, waited) {
+      var s = capState[name];
+      if (s === "denied" || s === "unavailable") { return true; }
+      if (s === undefined && waited >= NO_BRIDGE_MS) { return true; }
+      return waited >= GIVE_UP_MS;
+    }
+    // Resolves make() once ready() is true; rejects NotAllowedError per
+    // capDead. The microphone and motion polyfills settle through this;
+    // the camera keeps its own poll (spec decision 2) and calls capDead
+    // directly.
+    function settle(name, ready, make) {
+      return new Promise(function (resolve, reject) {
+        var waited = 0;
+        var poll = setInterval(function () {
+          if (ready()) { clearInterval(poll); resolve(make()); return; }
+          waited += 100;
+          if (capDead(name, waited)) {
+            clearInterval(poll);
+            reject(new DOMException(name + " not available here.", "NotAllowedError"));
+          }
+        }, 100);
+      });
+    }
+
     var camCanvas = document.createElement("canvas");
     var camCtx = camCanvas.getContext("2d", { alpha: false });
     var camGotFrame = false;
@@ -586,14 +641,19 @@ window.__SUMMIT__ = {
                 } catch (err) { /* no parent listening: the published site */ }
               };
             }
+            // When the parent says the camera is no longer live (Stop, idle
+            // timer, teardown), end what the student holds.
+            capEnded.camera = function () {
+              stream.getTracks().forEach(function (t) { t.stop(); });
+            };
             resolve(stream);
             return;
           }
           waited += 100;
-          // No parent bridging (the gallery, spec A6) or the group said no.
-          // Reject so a student's catch block runs; a promise that never
-          // settles is a dead page with no error.
-          if (waited >= 30000) {
+          // No parent bridging (the gallery, spec A6), the group said no,
+          // or nobody clicked for 30s. Reject so a student's catch block
+          // runs; a promise that never settles is a dead page with no error.
+          if (capDead("camera", waited)) {
             clearInterval(poll);
             reject(new DOMException(
               "Camera not available in this preview.", "NotAllowedError"));
@@ -602,26 +662,267 @@ window.__SUMMIT__ = {
       });
     };
 
-    // Two behaviour changes this bridge imposes on projects that never
-    // wanted a camera at all, recorded because neither is obvious from the
-    // code above and both are visible to students:
+    // --- microphone bridge (preview bridges slice 2) ---------------------
+    // The parent taps the real mic and transfers Float32Array chunks in;
+    // this side feeds them into a ring buffer on the audio thread and
+    // hands student code the stream of a MediaStreamAudioDestinationNode
+    // -- a real MediaStream with a real audio track, so AnalyserNode,
+    // MediaRecorder and every tutorial keep working unchanged.
+    var micGot = false;
+    var micCtx = null;
+    var micFeed = null;
+    // The in-flight PROMISE, memoized separately from micFeed itself: two
+    // getUserMedia({audio}) calls made before the first feed resolves both
+    // see micFeed === null and, without this, would each build their own
+    // feed -- the second build overwriting micFeed and silently orphaning
+    // the first caller's stream, which then never receives another chunk.
+    var micFeedReady = null;
+    // One line, no newline escapes and no percent signs: _TEMPLATE is a
+    // %-formatted non-raw Python string. `sampleRate` is a global of the
+    // AudioWorkletGlobalScope. Two seconds of ring; overrun drops oldest,
+    // underrun plays silence.
+    var FEED_SRC = "class F extends AudioWorkletProcessor{constructor(){super();this.cap=sampleRate*2|0;this.r=new Float32Array(this.cap);this.h=0;this.t=0;this.n=0;this.port.onmessage=(e)=>{var s=e.data;for(var i=0;i<s.length;i++){this.r[this.h]=s[i];this.h+=1;if(this.h===this.cap)this.h=0;if(this.n===this.cap){this.t+=1;if(this.t===this.cap)this.t=0;}else{this.n+=1;}}};}process(inputs,outputs){var o=outputs[0][0];if(!o)return true;for(var i=0;i<o.length;i++){if(this.n>0){o[i]=this.r[this.t];this.t+=1;if(this.t===this.cap)this.t=0;this.n-=1;}else{o[i]=0;}}return true;}}registerProcessor('summit-feed',F);";
+    // Linear resample when the parent's rate differs from this context's
+    // (two contexts on one device normally agree; a mismatch is rare but
+    // would otherwise pitch-shift the student's audio).
+    function resample(samples, rate, target) {
+      if (!rate || rate === target) { return samples; }
+      var ratio = rate / target;
+      var n = Math.floor(samples.length / ratio);
+      var out = new Float32Array(n);
+      for (var i = 0; i < n; i++) {
+        var p = i * ratio;
+        var j = Math.floor(p);
+        var f = p - j;
+        var a = samples[j];
+        var b = j + 1 < samples.length ? samples[j + 1] : a;
+        out[i] = a + (b - a) * f;
+      }
+      return out;
+    }
+    // ScriptProcessor fallback: a main-thread ring buffer. Deprecated but
+    // universal; the spike measured zero drops on it.
     //
-    //   1. getUserMedia({ audio: true }) now goes through `bridged` like
-    //      everything else -- it does not check what was asked for.
-    //      Microphone is out of scope (spec "Out of scope"), so an
-    //      audio-only request raises the camera consent strip in the IDE
-    //      and then either resolves with a canvas VIDEO track and no audio
-    //      track at all, or -- with nobody to answer, which is the usual
-    //      case -- sits in the 100ms poll below for a full 30 SECONDS
-    //      before rejecting with NotAllowedError. Native getUserMedia
-    //      would have failed immediately instead, so an audio project in
-    //      the preview looks hung for half a minute before its catch block
-    //      runs.
-    //   2. enumerateDevices is replaced UNCONDITIONALLY, not merged: any
-    //      project that enumerates sees exactly one fabricated
-    //      "videoinput" and zero microphones, whatever hardware the
-    //      machine actually has. A library that picks a device by
-    //      deviceId, or counts audioinputs, gets this fiction.
+    // createScriptProcessor() can itself throw (an engine that has removed
+    // it outright). This is the last fallback -- nothing left to try after
+    // it -- so its throw is rethrown as the same DOMException shape the
+    // rest of the polyfill uses, not a raw engine error. Every caller below
+    // is either inside a `new Promise(...)` executor or a `.then` handler,
+    // both of which turn a synchronous throw into a rejection on their own,
+    // so no extra wrapping is needed at the call sites.
+    function spFeed(ctx) {
+      var CAP = Math.floor(ctx.sampleRate * 2);
+      var ring = new Float32Array(CAP);
+      var head = 0, tail = 0, count = 0;
+      var node;
+      try {
+        node = ctx.createScriptProcessor(1024, 1, 1);
+      } catch (err) {
+        throw new DOMException("microphone not available here.", "NotAllowedError");
+      }
+      node.onaudioprocess = function (ev) {
+        var out = ev.outputBuffer.getChannelData(0);
+        for (var i = 0; i < out.length; i++) {
+          if (count > 0) {
+            out[i] = ring[tail];
+            tail += 1; if (tail === CAP) { tail = 0; }
+            count -= 1;
+          } else { out[i] = 0; }
+        }
+      };
+      return {
+        node: node,
+        push: function (samples, rate) {
+          var s = resample(samples, rate, ctx.sampleRate);
+          for (var k = 0; k < s.length; k++) {
+            ring[head] = s[k];
+            head += 1; if (head === CAP) { head = 0; }
+            if (count === CAP) { tail += 1; if (tail === CAP) { tail = 0; } }
+            else { count += 1; }
+          }
+        }
+      };
+    }
+    // Worklet first (measured: a blob-URL module loads in the opaque-origin
+    // child), ScriptProcessor if the engine refuses it.
+    function makeFeed(ctx) {
+      var canWorklet = ctx.audioWorklet && typeof AudioWorkletNode !== "undefined"
+        && typeof URL.createObjectURL === "function";
+      // Wrapped in a Promise executor, not called bare: a synchronous throw
+      // from spFeed() (its own createScriptProcessor fallback failing too)
+      // must reject makeFeed()'s promise, not escape as an uncaught
+      // exception before requestMic ever gets to attach a .then/.catch.
+      if (!canWorklet) {
+        return new Promise(function (resolve) { resolve(spFeed(ctx)); });
+      }
+      var url = URL.createObjectURL(new Blob([FEED_SRC], { type: "text/javascript" }));
+      return ctx.audioWorklet.addModule(url).then(function () {
+        URL.revokeObjectURL(url);
+        // Constructing the node can throw too (an engine that accepts the
+        // module but refuses the processor, or any other runtime quirk) --
+        // that must fall back exactly like a rejected addModule, not reject
+        // feedReady with a raw NotSupportedError. A throw here, inside a
+        // .then handler, already rejects the promise on its own, so the
+        // fallback below only needs a try/catch, not a re-wrap.
+        try {
+          var node = new AudioWorkletNode(ctx, "summit-feed",
+            { numberOfInputs: 0, numberOfOutputs: 1, outputChannelCount: [1] });
+        } catch (err) {
+          return spFeed(ctx);
+        }
+        return {
+          node: node,
+          push: function (samples, rate) {
+            var s = resample(samples, rate, ctx.sampleRate);
+            node.port.postMessage(s, [s.buffer]);
+          }
+        };
+      }, function () {
+        URL.revokeObjectURL(url);
+        return spFeed(ctx);
+      });
+    }
+    // Acks unconditionally, like the camera's frame listener, and for the
+    // same reasons (read useCameraBridge.ts's IDLE_STOP_MS comment).
+    window.addEventListener("message", function (e) {
+      var d = e.data;
+      if (e.source !== window.parent) { return; }
+      if (!d || d.type !== "summit:mic-chunk" || !d.samples) { return; }
+      try {
+        if (micFeed) { micFeed.push(d.samples, d.sampleRate); micGot = true; }
+      } catch (err) { /* a torn chunk is not worth killing the feed for */ }
+      window.parent.postMessage({ type: "summit:mic-ack" }, "*");
+    });
+    var requestMic = function () {
+      window.parent.postMessage({ type: "summit:mic-request" }, "*");
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) {
+        return Promise.reject(new DOMException("microphone not available here.", "NotAllowedError"));
+      }
+      // Created HERE, synchronously: a call made from inside a tap inherits
+      // the tap, and an iPad keeps a context made outside one suspended.
+      if (!micCtx) { micCtx = new AC(); }
+      var ctx = micCtx;
+      ctx.resume().catch(function () {});
+      if (!micFeedReady) {
+        // A rejected build must not be cached forever: the memo holds the
+        // PROMISE, not just the built feed, so without this a transient
+        // createScriptProcessor failure on the first call would fail every
+        // later getUserMedia({audio}) on the page for good -- the pre-fix
+        // code (which only ever assigned micFeed on success) was
+        // accidentally retryable, and this keeps that property.
+        micFeedReady = makeFeed(ctx).then(function (f) { micFeed = f; return f; },
+                                          function (err) { micFeedReady = null; throw err; });
+      }
+      var feedReady = micFeedReady;
+      return feedReady.then(function (feed) {
+        return settle("microphone", function () { return micGot; }, function () {
+          var dest = ctx.createMediaStreamDestination();
+          feed.node.connect(dest);
+          var stream = dest.stream;
+          var track = stream.getAudioTracks()[0];
+          if (track) {
+            // Tell the parent exactly once, so its ack-fed idle timer can
+            // end -- the camera's wrapper, for the camera's reason.
+            var nativeStop = track.stop.bind(track);
+            var stopped = false;
+            track.stop = function () {
+              nativeStop();
+              if (stopped) { return; }
+              stopped = true;
+              try { window.parent.postMessage({ type: "summit:mic-stop" }, "*"); }
+              catch (err) { /* no parent listening */ }
+            };
+          }
+          capEnded.microphone = function () {
+            stream.getTracks().forEach(function (t) { t.stop(); });
+          };
+          return stream;
+        });
+      });
+    };
+
+    // --- tilt / motion bridge (preview bridges slice 2) ------------------
+    // The child's permissions policy denies accelerometer and gyroscope
+    // (measured), so no sensor event ever fires here on its own. The parent
+    // forwards its own, and they are re-dispatched as REAL
+    // DeviceOrientationEvent / DeviceMotionEvent objects (measured to reach
+    // ordinary listeners), so student code is identical on the published
+    // site. iOS 13+'s requestPermission() gate is polyfilled to ask the
+    // parent; a first listener asks too, because most tutorials never call
+    // the gate and Chromium never needs it.
+    var motionAsked = false;
+    function requestMotion() {
+      if (!motionAsked) {
+        motionAsked = true;
+        window.parent.postMessage({ type: "summit:motion-request" }, "*");
+      }
+      return settle("motion", function () { return capState.motion === "granted"; },
+                    function () { return "granted"; });
+    }
+    function motionPermission() {
+      return requestMotion().then(function () { return "granted"; },
+                                  function () { return "denied"; });
+    }
+    if (typeof DeviceOrientationEvent !== "undefined") {
+      DeviceOrientationEvent.requestPermission = motionPermission;
+    }
+    if (typeof DeviceMotionEvent !== "undefined") {
+      DeviceMotionEvent.requestPermission = motionPermission;
+    }
+    function dispatchSample(s) {
+      var type = s.kind === "orientation" ? "deviceorientation" : "devicemotion";
+      var ev;
+      try {
+        ev = s.kind === "orientation"
+          ? new DeviceOrientationEvent(type, { alpha: s.alpha, beta: s.beta, gamma: s.gamma, absolute: !!s.absolute })
+          : new DeviceMotionEvent(type, { acceleration: s.acceleration,
+              accelerationIncludingGravity: s.accelerationIncludingGravity,
+              rotationRate: s.rotationRate, interval: s.interval });
+      } catch (err) {
+        // No constructor (older WebKit): a plain Event carrying the fields.
+        ev = new Event(type);
+        Object.keys(s).forEach(function (k) {
+          if (k === "kind") { return; }
+          try { Object.defineProperty(ev, k, { value: s[k] }); } catch (e2) { /* read-only */ }
+        });
+      }
+      window.dispatchEvent(ev);
+    }
+    window.addEventListener("message", function (e) {
+      var d = e.data;
+      if (e.source !== window.parent) { return; }
+      if (!d || d.type !== "summit:motion-sample" || !d.sample) { return; }
+      try { dispatchSample(d.sample); } catch (err) { /* a bad sample is not worth a throw */ }
+    });
+    // Installed LAST, after this runtime's own listeners are registered:
+    // only the two sensor types are intercepted, everything else passes
+    // straight through.
+    var realAddEventListener = window.addEventListener;
+    window.addEventListener = function (type) {
+      if (type === "deviceorientation" || type === "devicemotion") {
+        requestMotion().catch(function () {});
+      }
+      // this || window, not a bare window: a call made with an explicit
+      // receiver (el.addEventListener.call(otherThing, ...), a borrowed
+      // reference) keeps that receiver instead of being forced onto the
+      // global object.
+      return realAddEventListener.apply(this || window, arguments);
+    };
+
+    // What the polyfilled getUserMedia does with each constraint shape:
+    //   { video }         the camera bridge alone (bridged, above)
+    //   { audio }         the microphone bridge alone (requestMic)
+    //   { audio, video }  both, in parallel; ONE MediaStream carrying both
+    //                     tracks; a refusal of either rejects the whole
+    //                     call, as native getUserMedia does
+    // Until slice 2 an audio-only request went through the camera and
+    // resolved with a video track; that is gone.
+    //
+    // enumerateDevices is replaced UNCONDITIONALLY, not merged: any project
+    // that enumerates sees exactly one fabricated microphone and one
+    // fabricated camera, whatever hardware the machine actually has. A
+    // library that picks a device by deviceId gets this fiction.
     if (!navigator.mediaDevices) {
       try {
         Object.defineProperty(navigator, "mediaDevices",
@@ -629,13 +930,53 @@ window.__SUMMIT__ = {
       } catch (err) { /* nothing more we can do */ }
     }
     if (navigator.mediaDevices) {
-      navigator.mediaDevices.getUserMedia = bridged;
+      navigator.mediaDevices.getUserMedia = function (constraints) {
+        var c = constraints || {};
+        var parts = [];
+        if (c.video) { parts.push(bridged(c)); }
+        if (c.audio) { parts.push(requestMic()); }
+        if (!parts.length) {
+          return Promise.reject(new TypeError("getUserMedia needs audio or video"));
+        }
+        if (parts.length === 1) { return parts[0]; }
+        // A plain Promise.all rejects the instant ONE side refuses, but the
+        // OTHER side may already have resolved internally by then -- the
+        // camera's canvas is drawing frames, capEnded.camera is registered,
+        // the parent's indicator is lit -- and with no stream ever handed
+        // to the student, nothing can call .stop() on it: the camera (or
+        // mic) light stays on forever with no handle left to turn it off.
+        // Settle every part first (ES5, no Promise.allSettled), then stop
+        // every track of whichever part fulfilled before rejecting -- their
+        // wrapped stop() posts summit:camera-stop / summit:mic-stop, which
+        // is what turns the parent's indicator back off.
+        var settled = parts.map(function (p) {
+          return p.then(function (s) { return { ok: true, stream: s }; },
+                        function (e) { return { ok: false, error: e }; });
+        });
+        return Promise.all(settled).then(function (results) {
+          var firstError = null;
+          results.forEach(function (r) {
+            if (!r.ok && !firstError) { firstError = r.error; }
+          });
+          if (firstError) {
+            results.forEach(function (r) {
+              if (r.ok) { r.stream.getTracks().forEach(function (t) { t.stop(); }); }
+            });
+            throw firstError;
+          }
+          var tracks = [];
+          results.forEach(function (r) {
+            r.stream.getTracks().forEach(function (t) { tracks.push(t); });
+          });
+          return new MediaStream(tracks);
+        });
+      };
       // Libraries commonly enumerate before requesting.
       navigator.mediaDevices.enumerateDevices = function () {
-        return Promise.resolve([{
-          deviceId: "summit-bridge", kind: "videoinput",
-          label: "Camera", groupId: "summit"
-        }]);
+        return Promise.resolve([
+          { deviceId: "summit-bridge", kind: "videoinput", label: "Camera", groupId: "summit" },
+          { deviceId: "summit-bridge-mic", kind: "audioinput", label: "Microphone", groupId: "summit" }
+        ]);
       };
     }
   }
