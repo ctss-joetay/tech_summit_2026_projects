@@ -36,7 +36,24 @@
       "open_questions": [],
       "reason": "task-complete",
       "file": "002-2026-09-23-card-example-text-sizing.md"
+    },
+    {
+      "id": "003",
+      "date": "2026-09-23",
+      "topic": "ai-slang-usage-checker",
+      "files_touched": [
+        "script.js",
+        "index.html"
+      ],
+      "decisions": [
+        "Added notepad icon next to dictionary icon to open a 'Practice a Sentence' panel",
+        "Used Summit.generate (streamed) instead of Summit.judge, since judging slang usage correctness needs explanation, not just meaning comparison",
+        "Handles blocked AI case by showing platform message verbatim, and catches errors like AI not enabled/budget used up"
+      ],
+      "open_questions": [],
+      "reason": "task-complete",
+      "file": "003-2026-09-23-ai-slang-usage-checker.md"
     }
   ],
-  "last_summary_ts": 1790151572.756651
+  "last_summary_ts": 1790151794.8188853
 }

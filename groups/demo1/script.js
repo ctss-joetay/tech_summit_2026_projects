@@ -148,6 +148,74 @@ dictOverlay.addEventListener("click", (e) => {
   if (e.target === dictOverlay) dictOverlay.classList.add("hidden");
 });
 
+// ---- Practice a sentence (AI check) ----
+const practiceBtn = document.getElementById("practice-btn");
+const practiceOverlay = document.getElementById("practice-overlay");
+const practiceClose = document.getElementById("practice-close");
+const practiceWord = document.getElementById("practice-word");
+const practiceInput = document.getElementById("practice-input");
+const practiceCheck = document.getElementById("practice-check");
+const practiceResult = document.getElementById("practice-result");
+
+function fillPracticeWords() {
+  practiceWord.innerHTML = "";
+  for (const entry of SLANG) {
+    const opt = document.createElement("option");
+    opt.value = entry.word;
+    opt.textContent = entry.word;
+    practiceWord.appendChild(opt);
+  }
+}
+
+practiceBtn.addEventListener("click", () => {
+  fillPracticeWords();
+  practiceInput.value = "";
+  practiceResult.textContent = "";
+  practiceOverlay.classList.remove("hidden");
+});
+
+practiceClose.addEventListener("click", () => {
+  practiceOverlay.classList.add("hidden");
+});
+practiceOverlay.addEventListener("click", (e) => {
+  if (e.target === practiceOverlay) practiceOverlay.classList.add("hidden");
+});
+
+practiceCheck.addEventListener("click", async () => {
+  const word = practiceWord.value;
+  const sentence = practiceInput.value.trim();
+  if (!sentence) {
+    practiceResult.textContent = "Type a sentence first!";
+    practiceResult.style.color = "#F7573B";
+    return;
+  }
+  const entry = SLANG.find((s) => s.word === word);
+  practiceResult.textContent = "";
+  practiceResult.style.color = "#1a1a1a";
+  practiceCheck.disabled = true;
+  try {
+    const prompt =
+      "A visitor is learning internet slang. The slang word is \"" + word +
+      "\", which means: " + entry.meaning + ". They wrote this sentence: \"" + sentence +
+      "\". In two short, friendly sentences, tell them whether they used the word correctly, " +
+      "and explain briefly why. Start your reply with either 'Correct!' or 'Not quite.'";
+    const reply = await Summit.generate(prompt, {
+      onChunk: (piece) => { practiceResult.textContent += piece; }
+    });
+    if (reply && reply.blocked) {
+      practiceResult.textContent = reply.message;
+      practiceResult.style.color = "#F7573B";
+    } else {
+      practiceResult.style.color = /^correct/i.test(reply || practiceResult.textContent) ? "#2B4DD4" : "#F7573B";
+    }
+  } catch (e) {
+    practiceResult.textContent = e.message;
+    practiceResult.style.color = "#F7573B";
+  } finally {
+    practiceCheck.disabled = false;
+  }
+});
+
 async function init() {
   try {
     const saved = await Summit.load(STORAGE_KEY);

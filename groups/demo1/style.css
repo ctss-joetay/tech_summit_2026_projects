@@ -29,13 +29,19 @@ header h1 {
   -webkit-text-stroke: 1px var(--ink);
 }
 
-#dict-btn {
+.icon-stack {
+  display: flex;
+  gap: 0.75rem;
+}
+
+#dict-btn, #practice-btn {
   background: none;
   border: none;
   cursor: pointer;
   transition: transform 0.2s ease;
 }
-#dict-btn:hover, #dict-btn:active {
+#dict-btn:hover, #dict-btn:active,
+#practice-btn:hover, #practice-btn:active {
   transform: scale(1.15) rotate(-6deg);
 }
 
@@ -243,4 +249,76 @@ main {
 #dict-panel h2 {
   font-size: 1.6rem;
   font-weight: 900;
+}
+
+#practice-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: grid;
+  place-items: center;
+  z-index: 10;
+  transition: opacity 0.25s ease;
+}
+
+#practice-overlay.hidden {
+  display: none;
+}
+
+#practice-panel {
+  background: #fff;
+  border: 5px solid var(--ink);
+  border-radius: 20px;
+  box-shadow: 8px 8px 0 var(--ink);
+  padding: 1.5rem;
+  width: min(420px, 90vw);
+  max-height: 85vh;
+  overflow-y: auto;
+  position: relative;
+  animation: pop-in 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+#practice-panel h2 {
+  color: var(--main);
+  font-size: 1.6rem;
+  font-weight: 900;
+  margin-bottom: 0.25rem;
+}
+
+#practice-word, #practice-input {
+  font-family: inherit;
+  font-size: 1.1rem;
+  font-weight: 700;
+  padding: 0.6rem;
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  resize: vertical;
+}
+
+#practice-check {
+  align-self: flex-start;
+  margin-top: 0.25rem;
+}
+
+#practice-result {
+  font-weight: 800;
+  font-size: 1.05rem;
+  min-height: 1.4rem;
+  line-height: 1.4;
+}
+
+#practice-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  border: 2px solid var(--ink);
+  background: var(--highlight);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  font-weight: bold;
 }
