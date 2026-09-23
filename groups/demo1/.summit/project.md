@@ -8,7 +8,7 @@
 - Correct answer → word gets added to visitor's personal "Dictionary" (learnt words).
 - Wrong or tapping again → card flips back to definition side.
 - Top-right dictionary icon opens a panel/modal listing all learnt words.
-- Next to it, a **notepad icon** opens a "Practice a Sentence" panel: visitor picks a slang word from a dropdown, types their own sentence, clicks Check, and an AI call (`Summit.generate`, streamed) judges whether the word was used correctly and explains why in 1-2 sentences.
+- Next to it, a **notepad icon** opens a "Practice a Sentence" panel: visitor picks a slang word from a dropdown, types their own sentence, clicks Check, and an AI call (`Summit.generate`, streamed) judges whether the word was used correctly and explains why in 1-2 sentences. **With the new notepad function**, visitors can now key in their own original sentence (not just pre-set examples) to test whether they're using a chosen slang word correctly in context, and get AI feedback on it.
 - 30 slang/meme words total in the data set, each with its own correct front-example and a separate quiz-example + quizCorrect flag.
 
 **Persistence:** one visitor's learnt word list, saved via Summit.save (key/value array of learnt words).
@@ -22,4 +22,6 @@
 4. Correct T/F answer → saves word as learnt. Fail message: "database storing not working"
 5. AI sentence-check: if AI call is blocked/unavailable, shows the platform's message verbatim in the practice panel.
 
-**Status:** Core loop built and working (card + flip + quiz + dictionary + persistence). Font sizing increased and made responsive to avoid overflow. Added AI-powered "Practice a Sentence" feature via notepad icon.
+**Status:** Core loop built and working (card + flip + quiz + dictionary + persistence). Font sizing increased and made responsive to avoid overflow. Added AI-powered "Practice a Sentence" feature via notepad icon, with the new notepad function letting visitors type their own sentences for AI-checked slang usage feedback.
+
+**Open question:** Whether the AI call budget dashboard counter is just delayed/not refreshing versus an actual tracking bug (raised by group, not yet resolved — no code change needed unless it persists).
