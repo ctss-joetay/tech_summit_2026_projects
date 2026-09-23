@@ -53,7 +53,19 @@
       "open_questions": [],
       "reason": "task-complete",
       "file": "003-2026-09-23-ai-slang-usage-checker.md"
+    },
+    {
+      "id": "004",
+      "date": "2026-09-23",
+      "topic": "ai-call-budget-question",
+      "files_touched": [],
+      "decisions": [],
+      "open_questions": [
+        "Whether the AI call budget dashboard counter is just delayed/not refreshing versus an actual tracking bug"
+      ],
+      "reason": "publish",
+      "file": "004-2026-09-23-ai-call-budget-question.md"
     }
   ],
-  "last_summary_ts": 1790151794.8188853
+  "last_summary_ts": 1790151902.4895277
 }
