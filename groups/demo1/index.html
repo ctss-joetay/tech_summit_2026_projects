@@ -3,14 +3,58 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>My Project</title>
+  <title>Slang Decoder</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <header>
+    <h1>Slang Decoder</h1>
+    <button id="dict-btn" aria-label="Open dictionary">
+      <svg viewBox="0 0 24 24" width="32" height="32">
+        <rect x="3" y="3" width="18" height="18" rx="3" fill="#F7F13B" stroke="#1a1a1a" stroke-width="2"/>
+        <line x1="7" y1="8" x2="17" y2="8" stroke="#1a1a1a" stroke-width="2"/>
+        <line x1="7" y1="12" x2="17" y2="12" stroke="#1a1a1a" stroke-width="2"/>
+        <line x1="7" y1="16" x2="13" y2="16" stroke="#1a1a1a" stroke-width="2"/>
+      </svg>
+    </button>
+  </header>
+
   <main>
-    <h1>Hello, Tech Summit!</h1>
-    <p>Edit this page in the IDE, or ask the AI to build something.</p>
+    <div id="status" role="status"></div>
+    <div id="card" tabindex="0">
+      <div class="card-inner">
+        <div class="card-face card-front">
+          <div class="badge" id="front-word">WORD</div>
+          <p class="label">Meaning</p>
+          <p id="front-meaning">...</p>
+          <p class="label">Origin</p>
+          <p id="front-origin">...</p>
+          <p class="label">Example</p>
+          <p id="front-example">...</p>
+          <p class="hint">Tap the card!</p>
+        </div>
+        <div class="card-face card-back">
+          <p class="label">True or False?</p>
+          <p id="back-question">Was this used correctly?</p>
+          <div class="quiz-buttons">
+            <button id="btn-true" class="quiz-btn true-btn">TRUE</button>
+            <button id="btn-false" class="quiz-btn false-btn">FALSE</button>
+          </div>
+          <p id="back-result"></p>
+        </div>
+      </div>
+    </div>
   </main>
+
+  <div id="dict-overlay" class="hidden">
+    <div id="dict-panel">
+      <button id="dict-close" aria-label="Close dictionary">✕</button>
+      <h2>Your Dictionary</h2>
+      <p id="dict-empty">You haven't learnt any slang yet. Get a quiz right!</p>
+      <ul id="dict-list"></ul>
+    </div>
+  </div>
+
   <script src="_summit/runtime.js"></script>
   <script src="script.js"></script>
 </body>

@@ -1,4 +1,26 @@
 {
   "gid": "demo1",
-  "contexts": []
+  "contexts": [
+    {
+      "id": "001",
+      "date": "2026-09-23",
+      "topic": "daily-slang-card-quiz",
+      "files_touched": [
+        "script.js",
+        "index.html"
+      ],
+      "decisions": [
+        "Built one working core loop first: daily card flip-to-quiz-to-dictionary, before adding more features",
+        "Used Summit.save for persistence of learnt words rather than building custom backend",
+        "Included 30 slang entries with true/false example variants for quiz mode",
+        "Audible/visible failure messages implemented per spec for flip logic, dictionary display, and storage failures"
+      ],
+      "open_questions": [
+        "Whether the leaderboard/dictionary should reset each round or persist indefinitely (spec implies persistence but not explicitly confirmed long-term behavior)"
+      ],
+      "reason": "task-complete",
+      "file": "001-2026-09-23-daily-slang-card-quiz.md"
+    }
+  ],
+  "last_summary_ts": 1790151189.8632672
 }

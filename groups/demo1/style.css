@@ -1,11 +1,222 @@
+:root {
+  --main: #2B4DD4;
+  --accent: #F7573B;
+  --highlight: #F7F13B;
+  --ink: #1a1a1a;
+}
+
 * { box-sizing: border-box; margin: 0; }
+
 body {
   font-family: system-ui, sans-serif;
-  background: #fafafa;
-  color: #1a1a1a;
-  display: grid;
-  place-items: center;
+  background: var(--main);
+  color: var(--ink);
   min-height: 100vh;
 }
-main { text-align: center; }
-h1 { margin-bottom: 0.5rem; }
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+}
+
+header h1 {
+  color: #fff;
+  font-size: 1.5rem;
+  -webkit-text-stroke: 1px var(--ink);
+}
+
+#dict-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+#dict-btn:hover, #dict-btn:active {
+  transform: scale(1.15) rotate(-6deg);
+}
+
+main {
+  display: grid;
+  place-items: center;
+  padding: 2rem 1rem;
+}
+
+#status {
+  min-height: 1.5rem;
+  color: var(--highlight);
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+#card {
+  width: min(340px, 90vw);
+  height: 460px;
+  perspective: 1200px;
+  cursor: pointer;
+}
+
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s cubic-bezier(.68,-0.4,.32,1.4);
+  transform-style: preserve-3d;
+}
+
+#card.flipped .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  border: 5px solid var(--ink);
+  border-radius: 20px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  box-shadow: 6px 6px 0 var(--ink);
+}
+
+.card-front {
+  background: var(--highlight);
+}
+
+.card-back {
+  background: var(--accent);
+  color: #fff;
+  transform: rotateY(180deg);
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.badge {
+  background: var(--accent);
+  color: #fff;
+  font-size: 1.6rem;
+  font-weight: 900;
+  text-align: center;
+  padding: 0.5rem;
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  text-transform: uppercase;
+}
+
+.label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--main);
+  margin-top: 0.25rem;
+}
+
+.card-front p:not(.label) {
+  font-size: 1rem;
+}
+
+.hint {
+  margin-top: auto;
+  text-align: center;
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--main);
+}
+
+.quiz-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.quiz-btn {
+  font-weight: 900;
+  font-size: 1.1rem;
+  padding: 0.75rem 1.5rem;
+  border: 4px solid var(--ink);
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 var(--ink);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.quiz-btn:active {
+  transform: translate(3px, 3px);
+  box-shadow: 1px 1px 0 var(--ink);
+}
+.true-btn { background: var(--main); color: #fff; }
+.false-btn { background: var(--highlight); color: var(--ink); }
+
+#back-result {
+  font-weight: bold;
+  min-height: 1.5rem;
+}
+
+#dict-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: grid;
+  place-items: center;
+  z-index: 10;
+  transition: opacity 0.25s ease;
+}
+
+#dict-overlay.hidden {
+  display: none;
+}
+
+#dict-panel {
+  background: #fff;
+  border: 5px solid var(--ink);
+  border-radius: 20px;
+  box-shadow: 8px 8px 0 var(--ink);
+  padding: 1.5rem;
+  width: min(400px, 90vw);
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+  animation: pop-in 0.25s ease;
+}
+
+@keyframes pop-in {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+#dict-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  border: 2px solid var(--ink);
+  background: var(--highlight);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+#dict-panel h2 {
+  color: var(--main);
+  margin-bottom: 1rem;
+}
+
+#dict-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+#dict-list li {
+  background: var(--highlight);
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 0.5rem 0.75rem;
+  font-weight: 700;
+}
